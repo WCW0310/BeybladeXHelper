@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Button, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import useBLE from "@/hooks/useBLE";
 
@@ -6,10 +6,9 @@ export default function Index() {
   const {
     requestPermissions,
     scanPeripherals,
-    connectToDevice,
     disconnectDevice,
     sendLogClearCommand,
-    scannedDevices,
+    isScanning,
     isConnecting,
     isConnected,
     shootPowerValue,
@@ -23,13 +22,6 @@ export default function Index() {
       scanPeripherals();
     }
   };
-
-  useEffect(() => {
-    if (!isConnected) {
-      console.log("start scan devices");
-      scanDevices();
-    }
-  }, [isConnected]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -48,10 +40,18 @@ export default function Index() {
         }`}</Text>
       </View>
       <Button
-        title={isConnecting ? "連結中" : isConnected ? "切斷連結" : "連結裝置"}
-        disabled={scannedDevices.length === 0 || isConnecting}
+        title={
+          isScanning
+            ? "掃描中"
+            : isConnecting
+            ? "連結中"
+            : isConnected
+            ? "切斷連結"
+            : "連結裝置"
+        }
+        disabled={isScanning || isConnecting}
         onPress={() => {
-          isConnected ? disconnectDevice() : connectToDevice(scannedDevices[0]);
+          isConnected ? disconnectDevice() : scanDevices();
         }}
       />
       <Button

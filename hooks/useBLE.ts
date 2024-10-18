@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PermissionsAndroid, Platform } from "react-native";
 import { Buffer } from "buffer";
 
@@ -19,6 +19,7 @@ const CHARACTERISTIC_WRITE = "55C4F001-F8EB-11EC-B939-0242AC120002";
 const bleManager = new BleManager();
 
 function useBLE() {
+  const [isScanning, setIsScanning] = useState(false);
   const [scannedDevices, setScannedDevices] = useState<Device[]>([]);
   const [isConnecting, setIsConnecting] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
@@ -30,6 +31,14 @@ function useBLE() {
   const [shootPowerValue, setShootPowerValue] = useState("0");
   const [maxShootPowerValue, setMaxShootPowerValue] = useState("0");
   const [numShootValue, setNumShootValue] = useState("0");
+
+  useEffect(() => {
+    if (scannedDevices.length > 0) {
+      bleManager.stopDeviceScan();
+      setIsScanning(false);
+      connectToDevice(scannedDevices[0]);
+    }
+  }, [scannedDevices.length]);
 
   const requestAndroid31Permissions = async () => {
     const bluetoothScanPermission = await PermissionsAndroid.request(
@@ -87,10 +96,12 @@ function useBLE() {
     }
   };
 
-  const scanPeripherals = () =>
+  const scanPeripherals = () => {
+    setIsScanning(true);
     bleManager.startDeviceScan(null, null, (error, scannedDevice) => {
       if (error) {
         console.log("scanPeripherals error", error);
+        setIsScanning(false);
       }
       if (scannedDevice && scannedDevice.name === PERIPHERAL_NAME) {
         setScannedDevices((prevState: Device[]) => {
@@ -101,6 +112,8 @@ function useBLE() {
         });
       }
     });
+  };
+
   const isDuplicteDevice = (devices: Device[], nextDevice: Device) =>
     devices.findIndex((device) => nextDevice.id === device.id) > -1;
 
@@ -112,6 +125,7 @@ function useBLE() {
       );
       setConnectedDevice(connectedDevice);
       setIsConnected(true);
+      setScannedDevices([]);
       const onDeviceDisconnectedSubscription = bleManager.onDeviceDisconnected(
         scannedDevice.id,
         (error, disconnectedDevice) => {
@@ -129,7 +143,6 @@ function useBLE() {
         }
       );
       await connectedDevice.discoverAllServicesAndCharacteristics();
-      bleManager.stopDeviceScan();
       startStreamingData(connectedDevice);
     } catch (e) {
       console.log("connectToDevice error", e);
@@ -261,7 +274,7 @@ function useBLE() {
     connectToDevice,
     disconnectDevice,
     sendLogClearCommand,
-    scannedDevices,
+    isScanning,
     isConnecting,
     isConnected,
     shootPowerValue,
