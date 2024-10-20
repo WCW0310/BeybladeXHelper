@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "BeybladeXSPViewer",
-    "slug": "BeybladeXSPViewer",
+    "name": "BeybladerHelper",
+    "slug": "BeybladerHelper",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -14,14 +14,14 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.wayne.weng.BeybladeXSPViewer"
+      "bundleIdentifier": "com.wayne.weng.BeybladerHelper"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.wayne.weng.BeybladeXSPViewer"
+      "package": "com.wayne.weng.BeybladerHelper"
     },
     "web": {
       "bundler": "metro",

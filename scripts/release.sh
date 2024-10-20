@@ -3,7 +3,7 @@
 # 取得當前腳本所在的目錄
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PROJECT_ROOT="$SCRIPT_DIR/.."
-PROJECT_NAME="BeybladeXSPViewer"
+PROJECT_NAME="BeybladerHelper"
 
 # 創建 release 資料夾
 mkdir -p "$PROJECT_ROOT/release"

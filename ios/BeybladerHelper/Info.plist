@@ -7,7 +7,7 @@
     <key>CFBundleDevelopmentRegion</key>
     <string>$(DEVELOPMENT_LANGUAGE)</string>
     <key>CFBundleDisplayName</key>
-    <string>BeybladeXSPViewer</string>
+    <string>BeybladerHelper</string>
     <key>CFBundleExecutable</key>
     <string>$(EXECUTABLE_NAME)</string>
     <key>CFBundleIdentifier</key>
@@ -28,13 +28,13 @@
         <key>CFBundleURLSchemes</key>
         <array>
           <string>myapp</string>
-          <string>com.wayne.weng.BeybladeXSPViewer</string>
+          <string>com.wayne.weng.BeybladerHelper</string>
         </array>
       </dict>
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>exp+beybladexspviewer</string>
+          <string>exp+beybladerhelper</string>
         </array>
       </dict>
     </array>

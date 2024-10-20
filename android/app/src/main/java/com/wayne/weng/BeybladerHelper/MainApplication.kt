@@ -1,4 +1,4 @@
-package com.wayne.weng.BeybladeXSPViewer
+package com.wayne.weng.BeybladerHelper
 
 import android.app.Application
 import android.content.res.Configuration
