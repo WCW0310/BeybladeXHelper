@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { PermissionsAndroid, Platform } from "react-native";
 import { Buffer } from "buffer";
 
@@ -9,7 +9,10 @@ import {
   BleManager,
   Characteristic,
   Device,
+  DeviceId,
 } from "react-native-ble-plx";
+import { SpListItemProps } from "@/components/SpListItem";
+import { UiState } from "@/constants/UiState";
 
 const PERIPHERAL_NAME = "BEYBLADE_TOOL01";
 const SERVICE_UUID = "55C40000-F8EB-11EC-B939-0242AC120002";
@@ -22,15 +25,26 @@ function useBLE() {
   const [isScanning, setIsScanning] = useState(false);
   const [scannedDevices, setScannedDevices] = useState<Device[]>([]);
   const [isConnecting, setIsConnecting] = useState(false);
-  const [isConnected, setIsConnected] = useState(false);
-  const [connectedDevice, setConnectedDevice] = useState<Device | null>(null);
+  const [connectedDevices, setConnectedDevices] = useState<Device[]>([]);
+  const isConnected = useMemo(
+    () => connectedDevices.length > 0,
+    [connectedDevices]
+  );
+  const isMultipleConnected = useMemo(
+    () => connectedDevices.length > 1,
+    [connectedDevices]
+  );
+  const [uiState, setUiState] = useState<UiState>({
+    deviceId: "",
+    shootPowerValue: "0",
+    maxShootPowerValue: "0",
+    numShootValue: "0",
+  });
+  const [spList, setSpList] = useState<SpListItemProps[]>([]);
   const shootPowerLog = useRef(
     Array.from({ length: 8 }, () => new Uint8Array(17))
   ).current;
   let checksum = useRef(0).current;
-  const [shootPowerValue, setShootPowerValue] = useState("0");
-  const [maxShootPowerValue, setMaxShootPowerValue] = useState("0");
-  const [numShootValue, setNumShootValue] = useState("0");
 
   useEffect(() => {
     if (scannedDevices.length > 0) {
@@ -39,6 +53,26 @@ function useBLE() {
       connectToDevice(scannedDevices[0]);
     }
   }, [scannedDevices.length]);
+
+  useEffect(() => {
+    if (uiState.shootPowerValue !== "0") {
+      setSpList((prevState) => {
+        return [
+          {
+            id: uiState.numShootValue + uiState.deviceId,
+            shootNum: uiState.numShootValue,
+            spValue: uiState.shootPowerValue,
+            deviceNo: isMultipleConnected
+              ? connectedDevices.findIndex(
+                  (item) => item.id === uiState.deviceId
+                ) + 1
+              : 0,
+          },
+          ...prevState,
+        ];
+      });
+    }
+  }, [uiState]);
 
   const requestAndroid31Permissions = async () => {
     const bluetoothScanPermission = await PermissionsAndroid.request(
@@ -123,22 +157,27 @@ function useBLE() {
       const connectedDevice = await bleManager.connectToDevice(
         scannedDevice.id
       );
-      setConnectedDevice(connectedDevice);
-      setIsConnected(true);
+      setConnectedDevices([...connectedDevices, connectedDevice]);
       setScannedDevices([]);
       const onDeviceDisconnectedSubscription = bleManager.onDeviceDisconnected(
         scannedDevice.id,
         (error, disconnectedDevice) => {
           if (error) {
             console.error("onDeviceDisconnected error", error);
-            setIsConnected(false);
-            setConnectedDevice(null);
+            setConnectedDevices(
+              connectedDevices.filter((item) => {
+                item.id !== disconnectedDevice?.id;
+              })
+            );
             onDeviceDisconnectedSubscription.remove();
             return;
           }
           console.log("onDeviceDisconnected", disconnectedDevice?.id);
-          setIsConnected(false);
-          setConnectedDevice(null);
+          setConnectedDevices(
+            connectedDevices.filter((item) => {
+              item.id !== disconnectedDevice?.id;
+            })
+          );
           onDeviceDisconnectedSubscription.remove();
         }
       );
@@ -146,8 +185,11 @@ function useBLE() {
       startStreamingData(connectedDevice);
     } catch (e) {
       console.log("connectToDevice error", e);
-      setIsConnected(false);
-      setConnectedDevice(null);
+      setConnectedDevices(
+        connectedDevices.filter((item) => {
+          item.id !== scannedDevice.id;
+        })
+      );
     } finally {
       setIsConnecting(false);
     }
@@ -176,10 +218,13 @@ function useBLE() {
       console.log("onDataUpdate No Data was received");
       return;
     }
-    handleCharacteristicChanged(characteristic.value);
+    handleCharacteristicChanged(characteristic.value, characteristic.deviceID);
   };
 
-  const handleCharacteristicChanged = (base64Value: string) => {
+  const handleCharacteristicChanged = (
+    base64Value: string,
+    deviceId: DeviceId
+  ) => {
     const rxValues = Buffer.from(base64Value, "base64");
     let str = "";
     for (const b of rxValues) {
@@ -192,7 +237,9 @@ function useBLE() {
       }
       if (index === 7) {
         if (checksum !== rxValues[16]) {
-          setShootPowerValue("?????");
+          setUiState((prevState) => {
+            return { ...prevState, shootPowerValue: "?????" };
+          });
           return;
         }
         const maxShootPower = shootPowerLog[6][8] * 256 + shootPowerLog[6][7];
@@ -216,10 +263,12 @@ function useBLE() {
               256 +
             (shootPowerLog[latestShootPowerIndex1][latestShootPowerIndex2] &
               0xff);
-
-          setMaxShootPowerValue(maxShootPower.toString());
-          setNumShootValue(numShoot.toString());
-          setShootPowerValue(latestShootPower.toString());
+          setUiState({
+            deviceId: deviceId,
+            shootPowerValue: latestShootPower.toString(),
+            maxShootPowerValue: maxShootPower.toString(),
+            numShootValue: numShoot.toString(),
+          });
         } else {
           console.log(
             "handleCharacteristicChanged 重置裝置後，索引超出 shootPowerLog 範圍"
@@ -239,11 +288,14 @@ function useBLE() {
 
   const disconnectDevice = async () => {
     try {
-      const isConnected = await connectedDevice?.isConnected();
+      const isConnected = await connectedDevices?.[0]?.isConnected();
       if (isConnected) {
-        await connectedDevice?.cancelConnection();
-        setConnectedDevice(null);
-        setIsConnected(false);
+        await connectedDevices?.[0]?.cancelConnection();
+        setConnectedDevices(
+          connectedDevices.filter((_, index) => {
+            index !== 0;
+          })
+        );
       } else {
       }
     } catch (error) {
@@ -255,17 +307,32 @@ function useBLE() {
     try {
       const bytes = Buffer.from([117]);
       const base64Value = bytes.toString("base64");
-      await connectedDevice?.writeCharacteristicWithoutResponseForService(
+      await connectedDevices?.[0]?.writeCharacteristicWithoutResponseForService(
         SERVICE_UUID,
         CHARACTERISTIC_WRITE,
         base64Value
       );
-      setMaxShootPowerValue("0");
-      setNumShootValue("0");
-      setShootPowerValue("0");
+      setUiState((prevState) => {
+        return {
+          ...prevState,
+          shootPowerValue: "0",
+          maxShootPowerValue: "0",
+          numShootValue: "0",
+        };
+      });
     } catch (error) {
       console.log("sendLogClearCommand error", error);
     }
+  };
+
+  const clearSpList = () => {
+    setSpList([]);
+    setUiState((prevState) => {
+      return {
+        ...prevState,
+        shootPowerValue: "0",
+      };
+    });
   };
 
   return {
@@ -274,12 +341,13 @@ function useBLE() {
     connectToDevice,
     disconnectDevice,
     sendLogClearCommand,
+    clearSpList,
     isScanning,
     isConnecting,
     isConnected,
-    shootPowerValue,
-    maxShootPowerValue,
-    numShootValue,
+    isMultipleConnected,
+    uiState,
+    spList,
   };
 }
 
