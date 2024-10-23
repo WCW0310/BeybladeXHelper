@@ -1,11 +1,27 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 
-const TextPairV = ({ title, value }: { title: string; value: string }) => {
+const TextPairV = ({
+  title,
+  value,
+  scale = 1,
+}: {
+  title: string;
+  value: string;
+  scale?: number;
+}) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.value}>{value}</Text>
+      <Text
+        style={{ ...styles.title, fontSize: styles.title.fontSize * scale }}
+      >
+        {title}
+      </Text>
+      <Text
+        style={{ ...styles.value, fontSize: styles.value.fontSize * scale }}
+      >
+        {value}
+      </Text>
     </View>
   );
 };

@@ -3,7 +3,7 @@
     "name": "BeybladerHelper",
     "slug": "BeybladerHelper",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
@@ -30,7 +30,8 @@
     },
     "plugins": [
       "expo-router",
-      "react-native-ble-plx"
+      "react-native-ble-plx",
+      "expo-screen-orientation"
     ],
     "experiments": {
       "typedRoutes": true

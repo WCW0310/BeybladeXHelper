@@ -1,9 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { PermissionsAndroid, Platform } from "react-native";
 import { Buffer } from "buffer";
-
 import * as ExpoDevice from "expo-device";
-
 import {
   BleError,
   BleManager,

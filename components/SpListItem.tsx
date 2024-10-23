@@ -13,9 +13,9 @@ const SpListItem = ({ shootNum, spValue, deviceNo }: SpListItemProps) => {
     <View style={styles.container}>
       <Text style={styles.shootNum}>{`No. ${shootNum}`}</Text>
       <Text style={styles.spValue}>{`${spValue}`}</Text>
-      <Text style={styles.deviceNo}>
+      {/* <Text style={styles.deviceNo}>
         {deviceNo === 0 ? "" : `裝置${deviceNo}`}
-      </Text>
+      </Text> */}
     </View>
   );
 };
@@ -25,17 +25,14 @@ export default SpListItem;
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
     alignItems: "center",
   },
   shootNum: {
-    flex: 1,
     fontSize: 20,
-    textAlign: "left",
-    marginLeft: 50,
+    textAlign: "center",
   },
   spValue: {
-    flex: 1,
     fontSize: 30,
     fontWeight: "bold",
     textAlign: "left",
