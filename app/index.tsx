@@ -7,6 +7,7 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import * as ScreenOrientation from "expo-screen-orientation";
 import Portrait from "./components/Portrait";
 import Landscape from "./components/Landscape";
+import { activateKeepAwakeAsync, deactivateKeepAwake } from "expo-keep-awake";
 
 const theme = createTheme({
   lightColors: {},
@@ -71,6 +72,17 @@ export default function Index() {
       ScreenOrientation.removeOrientationChangeListeners();
     };
   });
+
+  useEffect(() => {
+    if (isScanning || isConnecting || isConnected) {
+      activateKeepAwakeAsync();
+    } else {
+      deactivateKeepAwake();
+    }
+    return () => {
+      deactivateKeepAwake();
+    };
+  }, [isScanning, isConnecting, isConnected]);
 
   return (
     <ThemeProvider theme={theme}>
