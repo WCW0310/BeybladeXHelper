@@ -2,11 +2,11 @@ import { createTheme, ThemeProvider } from "@rneui/themed";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, useWindowDimensions } from "react-native";
 import useBLE from "@/hooks/useBLE";
-import SpListItem, { SpListItemProps } from "@/components/SpListItem";
+import SpListItem, { SpListItemProps } from "@/components/index/SpListItem";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import * as ScreenOrientation from "expo-screen-orientation";
-import Portrait from "./components/Portrait";
-import Landscape from "./components/Landscape";
+import Portrait from "../components/index/Portrait";
+import Landscape from "../components/index/Landscape";
 import { activateKeepAwakeAsync, deactivateKeepAwake } from "expo-keep-awake";
 
 const theme = createTheme({

@@ -14,11 +14,15 @@ const TextPairV = ({
     <View style={styles.container}>
       <Text
         style={{ ...styles.title, fontSize: styles.title.fontSize * scale }}
+        adjustsFontSizeToFit
+        numberOfLines={1}
       >
         {title}
       </Text>
       <Text
         style={{ ...styles.value, fontSize: styles.value.fontSize * scale }}
+        adjustsFontSizeToFit
+        numberOfLines={1}
       >
         {value}
       </Text>

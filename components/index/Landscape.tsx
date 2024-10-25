@@ -1,9 +1,9 @@
 import { Button, Divider } from "@rneui/themed";
 import React from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
-import TextPairV from "@/app/components/TextPairV";
+import TextPairV from "@/components/index/TextPairV";
 import { UiState } from "@/constants/UiState";
-import { SpListItemProps } from "@/components/SpListItem";
+import { SpListItemProps } from "@/components/index/SpListItem";
 
 const Landscape = ({
   uiState,
@@ -33,8 +33,18 @@ const Landscape = ({
   return (
     <View style={styles.container}>
       <View style={styles.leftContainer}>
-        <Text style={styles.currentSpValue}>{uiState.shootPowerValue}</Text>
-        <Text style={styles.connectionStatus}>{`連結狀態: ${
+        <Text
+          style={styles.currentSpValue}
+          adjustsFontSizeToFit
+          numberOfLines={1}
+        >
+          {uiState.shootPowerValue}
+        </Text>
+        <Text
+          style={styles.connectionStatus}
+          adjustsFontSizeToFit
+          numberOfLines={1}
+        >{`連結狀態: ${
           isScanning
             ? "掃描中"
             : isConnecting
@@ -43,23 +53,25 @@ const Landscape = ({
             ? "已連結"
             : "未連結"
         }`}</Text>
-        <Button
-          containerStyle={styles.connectBtn}
-          title={
-            isScanning
-              ? "掃描中"
-              : isConnecting
-              ? "連結中"
-              : isConnected
-              ? "切斷連結"
-              : "連結裝置"
-          }
-          disabled={isScanning || isConnecting}
-          onPress={() => {
-            isConnected ? disconnectDevice() : scanDevices();
-          }}
-          color={isConnected ? "error" : "primary"}
-        />
+        <View style={styles.connectBtnContainer}>
+          <Button
+            containerStyle={styles.connectBtn}
+            title={
+              isScanning
+                ? "掃描中"
+                : isConnecting
+                ? "連結中"
+                : isConnected
+                ? "切斷連結"
+                : "連結裝置"
+            }
+            disabled={isScanning || isConnecting}
+            onPress={() => {
+              isConnected ? disconnectDevice() : scanDevices();
+            }}
+            color={isConnected ? "error" : "primary"}
+          />
+        </View>
       </View>
       <Divider style={styles.divider} />
       <View style={styles.rightContainer}>
@@ -75,7 +87,9 @@ const Landscape = ({
             scale={0.8}
           />
         </View>
-        <Text style={styles.spListTitle}>{"最近紀錄"}</Text>
+        <Text style={styles.spListTitle} adjustsFontSizeToFit numberOfLines={1}>
+          {"最近紀錄"}
+        </Text>
         {!hideSpList && (
           <FlatList
             data={spList.filter((_, index) => index !== 0)}
@@ -121,6 +135,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "bold",
     marginBottom: 8,
+  },
+  connectBtnContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
   },
   connectBtn: {
     alignSelf: "center",

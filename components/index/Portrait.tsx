@@ -7,9 +7,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import TextPairV from "@/app/components/TextPairV";
+import TextPairV from "@/components/index/TextPairV";
 import { UiState } from "@/constants/UiState";
-import { SpListItemProps } from "@/components/SpListItem";
+import { SpListItemProps } from "@/components/index/SpListItem";
 
 const Portrait = ({
   uiState,
@@ -43,7 +43,13 @@ const Portrait = ({
         <TextPairV title={"射擊次數"} value={uiState.numShootValue} />
         <TextPairV title={"MAX SP"} value={uiState.maxShootPowerValue} />
       </View>
-      <Text style={styles.currentSpValue}>{uiState.shootPowerValue}</Text>
+      <Text
+        style={styles.currentSpValue}
+        adjustsFontSizeToFit
+        numberOfLines={1}
+      >
+        {uiState.shootPowerValue}
+      </Text>
       <View style={styles.spListTitleContainer}>
         <TouchableOpacity onPress={() => setHideSpList(!hideSpList)}>
           <Icon
@@ -53,7 +59,9 @@ const Portrait = ({
             size={30}
           ></Icon>
         </TouchableOpacity>
-        <Text style={styles.spListTitle}>{"最近紀錄"}</Text>
+        <Text style={styles.spListTitle} adjustsFontSizeToFit numberOfLines={1}>
+          {"最近紀錄"}
+        </Text>
         <Button
           title={"清除紀錄"}
           disabled={spList.length === 0}
@@ -72,7 +80,11 @@ const Portrait = ({
       )}
       <Divider style={styles.divider} />
       <View style={styles.bottomContainer}>
-        <Text style={styles.connectionStatus}>{`連結狀態: ${
+        <Text
+          style={styles.connectionStatus}
+          adjustsFontSizeToFit
+          numberOfLines={1}
+        >{`連結狀態: ${
           isScanning
             ? "掃描中"
             : isConnecting
