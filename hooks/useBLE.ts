@@ -9,8 +9,9 @@ import {
   Device,
   DeviceId,
 } from "react-native-ble-plx";
-import { SpListItemProps } from "@/components/SpListItem";
+import { SpListItemProps } from "@/components/index/SpListItem";
 import { UiState } from "@/constants/UiState";
+import { ConnectedDeviceState } from "@/constants/ConnectedDeviceState";
 
 const PERIPHERAL_NAME = "BEYBLADE_TOOL01";
 const SERVICE_UUID = "55C40000-F8EB-11EC-B939-0242AC120002";
@@ -23,7 +24,9 @@ function useBLE() {
   const [isScanning, setIsScanning] = useState(false);
   const [scannedDevices, setScannedDevices] = useState<Device[]>([]);
   const [isConnecting, setIsConnecting] = useState(false);
-  const [connectedDevices, setConnectedDevices] = useState<Device[]>([]);
+  const [connectedDevices, setConnectedDevices] = useState<
+    ConnectedDeviceState[]
+  >([]);
   const isConnected = useMemo(
     () => connectedDevices.length > 0,
     [connectedDevices]
@@ -44,14 +47,15 @@ function useBLE() {
   ).current;
   let checksum = useRef(0).current;
 
+  // 自動停止掃描，並連線
   useEffect(() => {
     if (scannedDevices.length > 0) {
-      bleManager.stopDeviceScan();
-      setIsScanning(false);
+      stopScan();
       connectToDevice(scannedDevices[0]);
     }
   }, [scannedDevices.length]);
 
+  // 更新 SP 列表
   useEffect(() => {
     if (uiState.shootPowerValue !== "0") {
       setSpList((prevState) => {
@@ -62,7 +66,7 @@ function useBLE() {
             spValue: uiState.shootPowerValue,
             deviceNo: isMultipleConnected
               ? connectedDevices.findIndex(
-                  (item) => item.id === uiState.deviceId
+                  (value) => value.device.id === uiState.deviceId
                 ) + 1
               : 0,
           },
@@ -71,6 +75,13 @@ function useBLE() {
       });
     }
   }, [uiState]);
+
+  const scanDevices = async () => {
+    const isPermissionsEnabled = await requestPermissions();
+    if (isPermissionsEnabled) {
+      scanPeripherals();
+    }
+  };
 
   const requestAndroid31Permissions = async () => {
     const bluetoothScanPermission = await PermissionsAndroid.request(
@@ -149,13 +160,24 @@ function useBLE() {
   const isDuplicteDevice = (devices: Device[], nextDevice: Device) =>
     devices.findIndex((device) => nextDevice.id === device.id) > -1;
 
+  const stopScan = () => {
+    bleManager.stopDeviceScan();
+    setIsScanning(false);
+  };
+
   const connectToDevice = async (scannedDevice: Device) => {
     try {
       setIsConnecting(true);
       const connectedDevice = await bleManager.connectToDevice(
         scannedDevice.id
       );
-      setConnectedDevices([...connectedDevices, connectedDevice]);
+      setConnectedDevices([
+        ...connectedDevices,
+        {
+          device: connectedDevice,
+          uiState: { deviceName: (connectedDevices.length + 1).toString() },
+        },
+      ]);
       setScannedDevices([]);
       const onDeviceDisconnectedSubscription = bleManager.onDeviceDisconnected(
         scannedDevice.id,
@@ -164,7 +186,7 @@ function useBLE() {
             console.error("onDeviceDisconnected error", error);
             setConnectedDevices(
               connectedDevices.filter((item) => {
-                item.id !== disconnectedDevice?.id;
+                item.device.id !== disconnectedDevice?.id;
               })
             );
             onDeviceDisconnectedSubscription.remove();
@@ -173,7 +195,7 @@ function useBLE() {
           console.log("onDeviceDisconnected", disconnectedDevice?.id);
           setConnectedDevices(
             connectedDevices.filter((item) => {
-              item.id !== disconnectedDevice?.id;
+              item.device.id !== disconnectedDevice?.id;
             })
           );
           onDeviceDisconnectedSubscription.remove();
@@ -185,7 +207,7 @@ function useBLE() {
       console.log("connectToDevice error", e);
       setConnectedDevices(
         connectedDevices.filter((item) => {
-          item.id !== scannedDevice.id;
+          item.device.id !== scannedDevice.id;
         })
       );
     } finally {
@@ -267,6 +289,23 @@ function useBLE() {
             maxShootPowerValue: maxShootPower.toString(),
             numShootValue: numShoot.toString(),
           });
+          setConnectedDevices((prevState) =>
+            prevState.map((value) =>
+              value.device.id === deviceId
+                ? {
+                    ...value,
+                    uiState: {
+                      ...value.uiState,
+                      maxShootPowerValue: maxShootPower.toString(),
+                      numShootValue: numShoot.toString(),
+                      deviceName: (
+                        prevState.findIndex((d) => d.device.id === deviceId) + 1
+                      ).toString(),
+                    },
+                  }
+                : value
+            )
+          );
         } else {
           console.log(
             "handleCharacteristicChanged 重置裝置後，索引超出 shootPowerLog 範圍"
@@ -284,14 +323,14 @@ function useBLE() {
     }
   };
 
-  const disconnectDevice = async () => {
+  const disconnectDevice = async (device: Device) => {
     try {
-      const isConnected = await connectedDevices?.[0]?.isConnected();
+      const isConnected = await device.isConnected();
       if (isConnected) {
-        await connectedDevices?.[0]?.cancelConnection();
+        await device.cancelConnection();
         setConnectedDevices(
-          connectedDevices.filter((_, index) => {
-            index !== 0;
+          connectedDevices.filter((value) => {
+            return value.device.id !== device.id;
           })
         );
       } else {
@@ -301,11 +340,11 @@ function useBLE() {
     }
   };
 
-  const sendLogClearCommand = async () => {
+  const sendLogClearCommand = async (device: Device) => {
     try {
       const bytes = Buffer.from([117]);
       const base64Value = bytes.toString("base64");
-      await connectedDevices?.[0]?.writeCharacteristicWithoutResponseForService(
+      await device.writeCharacteristicWithoutResponseForService(
         SERVICE_UUID,
         CHARACTERISTIC_WRITE,
         base64Value
@@ -334,14 +373,14 @@ function useBLE() {
   };
 
   return {
-    requestPermissions,
-    scanPeripherals,
+    scanDevices,
+    stopScan,
     connectToDevice,
     disconnectDevice,
-    sendLogClearCommand,
     clearSpList,
     isScanning,
     isConnecting,
+    connectedDevices,
     isConnected,
     isMultipleConnected,
     uiState,

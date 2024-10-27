@@ -4,6 +4,7 @@ import { FlatList, StyleSheet, Text, View } from "react-native";
 import TextPairV from "@/components/index/TextPairV";
 import { UiState } from "@/constants/UiState";
 import { SpListItemProps } from "@/components/index/SpListItem";
+import DeviceBtn from "./DeviceBtn";
 
 const Landscape = ({
   uiState,
@@ -14,8 +15,9 @@ const Landscape = ({
   isScanning,
   isConnecting,
   isConnected,
-  disconnectDevice,
   scanDevices,
+  stopScan,
+  showDeviceBottomSheet,
 }: {
   uiState: UiState;
   hideSpList: boolean;
@@ -26,9 +28,9 @@ const Landscape = ({
   isScanning: boolean;
   isConnecting: boolean;
   isConnected: boolean;
-  disconnectDevice: () => Promise<void>;
   scanDevices: () => Promise<void>;
-  sendLogClearCommand: () => Promise<void>;
+  stopScan: () => void;
+  showDeviceBottomSheet: () => void;
 }) => {
   return (
     <View style={styles.container}>
@@ -54,22 +56,13 @@ const Landscape = ({
             : "未連結"
         }`}</Text>
         <View style={styles.connectBtnContainer}>
-          <Button
-            containerStyle={styles.connectBtn}
-            title={
-              isScanning
-                ? "掃描中"
-                : isConnecting
-                ? "連結中"
-                : isConnected
-                ? "切斷連結"
-                : "連結裝置"
-            }
-            disabled={isScanning || isConnecting}
-            onPress={() => {
-              isConnected ? disconnectDevice() : scanDevices();
-            }}
-            color={isConnected ? "error" : "primary"}
+          <DeviceBtn
+            isScanning={isScanning}
+            isConnecting={isConnecting}
+            isConnected={isConnected}
+            scanDevices={scanDevices}
+            stopScan={stopScan}
+            showDeviceBottomSheet={showDeviceBottomSheet}
           />
         </View>
       </View>
