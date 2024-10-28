@@ -184,19 +184,19 @@ function useBLE() {
         (error, disconnectedDevice) => {
           if (error) {
             console.error("onDeviceDisconnected error", error);
-            setConnectedDevices(
-              connectedDevices.filter((item) => {
-                item.device.id !== disconnectedDevice?.id;
-              })
+            setConnectedDevices((prevState) =>
+              prevState.filter(
+                (value) => value.device.id !== disconnectedDevice?.id
+              )
             );
             onDeviceDisconnectedSubscription.remove();
             return;
           }
           console.log("onDeviceDisconnected", disconnectedDevice?.id);
-          setConnectedDevices(
-            connectedDevices.filter((item) => {
-              item.device.id !== disconnectedDevice?.id;
-            })
+          setConnectedDevices((prevState) =>
+            prevState.filter(
+              (value) => value.device.id !== disconnectedDevice?.id
+            )
           );
           onDeviceDisconnectedSubscription.remove();
         }
@@ -205,10 +205,8 @@ function useBLE() {
       startStreamingData(connectedDevice);
     } catch (e) {
       console.log("connectToDevice error", e);
-      setConnectedDevices(
-        connectedDevices.filter((item) => {
-          item.device.id !== scannedDevice.id;
-        })
+      setConnectedDevices((prevState) =>
+        prevState.filter((value) => value.device.id !== scannedDevice.id)
       );
     } finally {
       setIsConnecting(false);
@@ -328,10 +326,8 @@ function useBLE() {
       const isConnected = await device.isConnected();
       if (isConnected) {
         await device.cancelConnection();
-        setConnectedDevices(
-          connectedDevices.filter((value) => {
-            return value.device.id !== device.id;
-          })
+        setConnectedDevices((prevState) =>
+          prevState.filter((value) => value.device.id !== device.id)
         );
       } else {
       }

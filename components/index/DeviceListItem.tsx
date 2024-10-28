@@ -21,7 +21,10 @@ const DeviceListItem = ({
 }: DeviceListItemProps) => {
   return (
     <Card containerStyle={styles.container}>
-      <Card.Title>{`裝置${deviceName}`}</Card.Title>
+      <Card.Title
+        adjustsFontSizeToFit
+        numberOfLines={1}
+      >{`裝置${deviceName}`}</Card.Title>
       <Card.Divider />
       <View style={styles.contentContainer}>
         <View style={styles.leftContainer}>
@@ -53,7 +56,7 @@ export default DeviceListItem;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    borderRadius: 16,
+    borderRadius: 12,
   },
   contentContainer: {
     flex: 1,

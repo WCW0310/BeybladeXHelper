@@ -18,9 +18,7 @@ const theme = createTheme({
   lightColors: {},
   darkColors: {},
   components: {
-    Button: {
-      raised: true,
-    },
+    Button: { radius: 12 },
   },
 });
 
@@ -154,6 +152,10 @@ export default function Index() {
               bottomSheetRef={bottomSheetRef}
               connectedDevices={connectedDevices}
               renderDeviceListItem={renderDeviceListItem}
+              isScanning={isScanning}
+              isConnecting={isConnecting}
+              scanDevices={scanDevices}
+              stopScan={stopScan}
             />
           </SafeAreaView>
         </ThemeProvider>
