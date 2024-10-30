@@ -11,6 +11,7 @@ import TextPairV from "@/components/index/TextPairV";
 import { UiState } from "@/constants/UiState";
 import { SpListItemProps } from "@/components/index/SpListItem";
 import DeviceBtn from "./DeviceBtn";
+import { useAppSelector } from "@/hooks/useApp";
 
 const Portrait = ({
   uiState,
@@ -39,11 +40,14 @@ const Portrait = ({
   stopScan: () => void;
   showDeviceBottomSheet: () => void;
 }) => {
+  const { numShootValue, maxShootPowerValue } = useAppSelector(
+    (state) => state.index
+  );
   return (
     <>
       <View style={styles.topContainer}>
-        <TextPairV title={"射擊次數"} value={uiState.numShootValue} />
-        <TextPairV title={"MAX SP"} value={uiState.maxShootPowerValue} />
+        <TextPairV title={"射擊次數"} value={numShootValue.toString()} />
+        <TextPairV title={"MAX SP"} value={maxShootPowerValue.toString()} />
       </View>
       <Text
         style={styles.currentSpValue}

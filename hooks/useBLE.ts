@@ -12,6 +12,8 @@ import {
 import { SpListItemProps } from "@/components/index/SpListItem";
 import { UiState } from "@/constants/UiState";
 import { ConnectedDeviceState } from "@/constants/ConnectedDeviceState";
+import { actions } from "@/slice/indexSlice";
+import { useAppDispatch } from "./useApp";
 
 const PERIPHERAL_NAME = "BEYBLADE_TOOL01";
 const SERVICE_UUID = "55C40000-F8EB-11EC-B939-0242AC120002";
@@ -21,6 +23,7 @@ const CHARACTERISTIC_WRITE = "55C4F001-F8EB-11EC-B939-0242AC120002";
 const bleManager = new BleManager();
 
 function useBLE() {
+  const dispatch = useAppDispatch();
   const [isScanning, setIsScanning] = useState(false);
   const [scannedDevices, setScannedDevices] = useState<Device[]>([]);
   const [isConnecting, setIsConnecting] = useState(false);
@@ -281,6 +284,8 @@ function useBLE() {
               256 +
             (shootPowerLog[latestShootPowerIndex1][latestShootPowerIndex2] &
               0xff);
+          dispatch(actions.incrementShootNum());
+          dispatch(actions.updateMaxShootPower(latestShootPower));
           setUiState({
             deviceId: deviceId,
             shootPowerValue: latestShootPower.toString(),
@@ -359,6 +364,7 @@ function useBLE() {
   };
 
   const clearSpList = () => {
+    dispatch(actions.reset());
     setSpList([]);
     setUiState((prevState) => {
       return {

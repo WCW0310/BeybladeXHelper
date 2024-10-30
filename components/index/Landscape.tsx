@@ -5,6 +5,7 @@ import TextPairV from "@/components/index/TextPairV";
 import { UiState } from "@/constants/UiState";
 import { SpListItemProps } from "@/components/index/SpListItem";
 import DeviceBtn from "./DeviceBtn";
+import { useAppSelector } from "@/hooks/useApp";
 
 const Landscape = ({
   uiState,
@@ -32,6 +33,9 @@ const Landscape = ({
   stopScan: () => void;
   showDeviceBottomSheet: () => void;
 }) => {
+  const { numShootValue, maxShootPowerValue } = useAppSelector(
+    (state) => state.index
+  );
   return (
     <View style={styles.container}>
       <View style={styles.leftContainer}>
@@ -71,12 +75,12 @@ const Landscape = ({
         <View style={styles.rightTopContainer}>
           <TextPairV
             title={"射擊次數"}
-            value={uiState.numShootValue}
+            value={numShootValue.toString()}
             scale={0.8}
           />
           <TextPairV
             title={"MAX SP"}
-            value={uiState.maxShootPowerValue}
+            value={maxShootPowerValue.toString()}
             scale={0.8}
           />
         </View>
