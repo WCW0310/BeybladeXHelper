@@ -13,6 +13,7 @@ import BottomSheet from "@gorhom/bottom-sheet";
 import DeviceListItem from "@/components/index/DeviceListItem";
 import { ConnectedDeviceState } from "@/constants/ConnectedDeviceState";
 import DeviceBottomSheet from "@/components/index/DeviceBottomSheet";
+import { useAppSelector } from "@/hooks/useApp";
 
 const theme = createTheme({
   lightColors: {},
@@ -43,11 +44,12 @@ export default function Index() {
     clearSpList,
     isScanning,
     isConnecting,
-    connectedDevices,
     isConnected,
     uiState,
     spList,
   } = useBLE();
+
+  const { connectedDevices } = useAppSelector((state) => state.index);
 
   // BottomSheet
   const bottomSheetRef = useRef<BottomSheet>(null);

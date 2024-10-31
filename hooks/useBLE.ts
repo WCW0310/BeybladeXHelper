@@ -11,9 +11,8 @@ import {
 } from "react-native-ble-plx";
 import { SpListItemProps } from "@/components/index/SpListItem";
 import { UiState } from "@/constants/UiState";
-import { ConnectedDeviceState } from "@/constants/ConnectedDeviceState";
 import { actions } from "@/slice/indexSlice";
-import { useAppDispatch } from "./useApp";
+import { useAppDispatch, useAppSelector } from "./useApp";
 
 const PERIPHERAL_NAME = "BEYBLADE_TOOL01";
 const SERVICE_UUID = "55C40000-F8EB-11EC-B939-0242AC120002";
@@ -24,12 +23,10 @@ const bleManager = new BleManager();
 
 function useBLE() {
   const dispatch = useAppDispatch();
+  const { connectedDevices } = useAppSelector((state) => state.index);
   const [isScanning, setIsScanning] = useState(false);
   const [scannedDevices, setScannedDevices] = useState<Device[]>([]);
   const [isConnecting, setIsConnecting] = useState(false);
-  const [connectedDevices, setConnectedDevices] = useState<
-    ConnectedDeviceState[]
-  >([]);
   const isConnected = useMemo(
     () => connectedDevices.length > 0,
     [connectedDevices]
@@ -174,33 +171,19 @@ function useBLE() {
       const connectedDevice = await bleManager.connectToDevice(
         scannedDevice.id
       );
-      setConnectedDevices([
-        ...connectedDevices,
-        {
-          device: connectedDevice,
-          uiState: { deviceName: (connectedDevices.length + 1).toString() },
-        },
-      ]);
+      dispatch(actions.addConnectedDevice(connectedDevice));
       setScannedDevices([]);
       const onDeviceDisconnectedSubscription = bleManager.onDeviceDisconnected(
         scannedDevice.id,
         (error, disconnectedDevice) => {
           if (error) {
             console.error("onDeviceDisconnected error", error);
-            setConnectedDevices((prevState) =>
-              prevState.filter(
-                (value) => value.device.id !== disconnectedDevice?.id
-              )
-            );
+            dispatch(actions.removeConnectedDevice(disconnectedDevice));
             onDeviceDisconnectedSubscription.remove();
             return;
           }
           console.log("onDeviceDisconnected", disconnectedDevice?.id);
-          setConnectedDevices((prevState) =>
-            prevState.filter(
-              (value) => value.device.id !== disconnectedDevice?.id
-            )
-          );
+          dispatch(actions.removeConnectedDevice(disconnectedDevice));
           onDeviceDisconnectedSubscription.remove();
         }
       );
@@ -208,9 +191,7 @@ function useBLE() {
       startStreamingData(connectedDevice);
     } catch (e) {
       console.log("connectToDevice error", e);
-      setConnectedDevices((prevState) =>
-        prevState.filter((value) => value.device.id !== scannedDevice.id)
-      );
+      dispatch(actions.removeConnectedDevice(scannedDevice));
     } finally {
       setIsConnecting(false);
     }
@@ -286,29 +267,19 @@ function useBLE() {
               0xff);
           dispatch(actions.incrementShootNum());
           dispatch(actions.updateMaxShootPower(latestShootPower));
+          dispatch(
+            actions.updateConnectedDevices({
+              deviceId: deviceId,
+              maxShootPowerValue: maxShootPower.toString(),
+              numShootValue: numShoot.toString(),
+            })
+          );
           setUiState({
             deviceId: deviceId,
             shootPowerValue: latestShootPower.toString(),
             maxShootPowerValue: maxShootPower.toString(),
             numShootValue: numShoot.toString(),
           });
-          setConnectedDevices((prevState) =>
-            prevState.map((value) =>
-              value.device.id === deviceId
-                ? {
-                    ...value,
-                    uiState: {
-                      ...value.uiState,
-                      maxShootPowerValue: maxShootPower.toString(),
-                      numShootValue: numShoot.toString(),
-                      deviceName: (
-                        prevState.findIndex((d) => d.device.id === deviceId) + 1
-                      ).toString(),
-                    },
-                  }
-                : value
-            )
-          );
         } else {
           console.log(
             "handleCharacteristicChanged 重置裝置後，索引超出 shootPowerLog 範圍"
@@ -331,9 +302,7 @@ function useBLE() {
       const isConnected = await device.isConnected();
       if (isConnected) {
         await device.cancelConnection();
-        setConnectedDevices((prevState) =>
-          prevState.filter((value) => value.device.id !== device.id)
-        );
+        dispatch(actions.removeConnectedDevice(device));
       } else {
       }
     } catch (error) {
@@ -382,7 +351,6 @@ function useBLE() {
     clearSpList,
     isScanning,
     isConnecting,
-    connectedDevices,
     isConnected,
     isMultipleConnected,
     uiState,
