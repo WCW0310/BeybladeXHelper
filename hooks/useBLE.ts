@@ -13,11 +13,12 @@ import { SpListItemProps } from "@/components/index/SpListItem";
 import { UiState } from "@/constants/UiState";
 import { actions } from "@/slice/indexSlice";
 import { useAppDispatch, useAppSelector } from "./useApp";
-
-const PERIPHERAL_NAME = "BEYBLADE_TOOL01";
-const SERVICE_UUID = "55C40000-F8EB-11EC-B939-0242AC120002";
-const CHARACTERISTIC_NOTIFY = "55C4F002-F8EB-11EC-B939-0242AC120002";
-const CHARACTERISTIC_WRITE = "55C4F001-F8EB-11EC-B939-0242AC120002";
+import {
+  PERIPHERAL_NAME,
+  SERVICE_UUID,
+  CHARACTERISTIC_NOTIFY,
+  CHARACTERISTIC_WRITE,
+} from "@/constants/DeviceUid";
 
 const bleManager = new BleManager();
 
@@ -352,7 +353,6 @@ function useBLE() {
     isScanning,
     isConnecting,
     isConnected,
-    isMultipleConnected,
     uiState,
     spList,
   };
