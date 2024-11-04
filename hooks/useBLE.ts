@@ -9,8 +9,6 @@ import {
   Device,
   DeviceId,
 } from "react-native-ble-plx";
-import { SpListItemProps } from "@/components/index/SpListItem";
-import { UiState } from "@/constants/UiState";
 import { actions } from "@/slice/indexSlice";
 import { useAppDispatch, useAppSelector } from "./useApp";
 import {
@@ -32,17 +30,6 @@ function useBLE() {
     () => connectedDevices.length > 0,
     [connectedDevices]
   );
-  const isMultipleConnected = useMemo(
-    () => connectedDevices.length > 1,
-    [connectedDevices]
-  );
-  const [uiState, setUiState] = useState<UiState>({
-    deviceId: "",
-    shootPowerValue: "0",
-    maxShootPowerValue: "0",
-    numShootValue: "0",
-  });
-  const [spList, setSpList] = useState<SpListItemProps[]>([]);
   const shootPowerLog = useRef(
     Array.from({ length: 8 }, () => new Uint8Array(17))
   ).current;
@@ -55,27 +42,6 @@ function useBLE() {
       connectToDevice(scannedDevices[0]);
     }
   }, [scannedDevices.length]);
-
-  // 更新 SP 列表
-  useEffect(() => {
-    if (uiState.shootPowerValue !== "0") {
-      setSpList((prevState) => {
-        return [
-          {
-            id: uiState.numShootValue + uiState.deviceId,
-            shootNum: uiState.numShootValue,
-            spValue: uiState.shootPowerValue,
-            deviceNo: isMultipleConnected
-              ? connectedDevices.findIndex(
-                  (value) => value.device.id === uiState.deviceId
-                ) + 1
-              : 0,
-          },
-          ...prevState,
-        ];
-      });
-    }
-  }, [uiState]);
 
   const scanDevices = async () => {
     const isPermissionsEnabled = await requestPermissions();
@@ -240,9 +206,7 @@ function useBLE() {
       }
       if (index === 7) {
         if (checksum !== rxValues[16]) {
-          setUiState((prevState) => {
-            return { ...prevState, shootPowerValue: "?????" };
-          });
+          dispatch(actions.updateShootPower(-1));
           return;
         }
         const maxShootPower = shootPowerLog[6][8] * 256 + shootPowerLog[6][7];
@@ -266,8 +230,13 @@ function useBLE() {
               256 +
             (shootPowerLog[latestShootPowerIndex1][latestShootPowerIndex2] &
               0xff);
-          dispatch(actions.incrementShootNum());
-          dispatch(actions.updateMaxShootPower(latestShootPower));
+          dispatch(
+            actions.updateSpList({
+              deviceId,
+              numShoot,
+              latestShootPower,
+            })
+          );
           dispatch(
             actions.updateConnectedDevices({
               deviceId: deviceId,
@@ -275,12 +244,6 @@ function useBLE() {
               numShootValue: numShoot.toString(),
             })
           );
-          setUiState({
-            deviceId: deviceId,
-            shootPowerValue: latestShootPower.toString(),
-            maxShootPowerValue: maxShootPower.toString(),
-            numShootValue: numShoot.toString(),
-          });
         } else {
           console.log(
             "handleCharacteristicChanged 重置裝置後，索引超出 shootPowerLog 範圍"
@@ -320,14 +283,7 @@ function useBLE() {
         CHARACTERISTIC_WRITE,
         base64Value
       );
-      setUiState((prevState) => {
-        return {
-          ...prevState,
-          shootPowerValue: "0",
-          maxShootPowerValue: "0",
-          numShootValue: "0",
-        };
-      });
+      dispatch(actions.reset());
     } catch (error) {
       console.log("sendLogClearCommand error", error);
     }
@@ -335,13 +291,6 @@ function useBLE() {
 
   const clearSpList = () => {
     dispatch(actions.reset());
-    setSpList([]);
-    setUiState((prevState) => {
-      return {
-        ...prevState,
-        shootPowerValue: "0",
-      };
-    });
   };
 
   return {
@@ -353,8 +302,6 @@ function useBLE() {
     isScanning,
     isConnecting,
     isConnected,
-    uiState,
-    spList,
   };
 }
 

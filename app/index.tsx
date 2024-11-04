@@ -45,8 +45,6 @@ export default function Index() {
     isScanning,
     isConnecting,
     isConnected,
-    uiState,
-    spList,
   } = useBLE();
 
   const { connectedDevices } = useAppSelector((state) => state.index);
@@ -121,10 +119,8 @@ export default function Index() {
               ScreenOrientation.Orientation.PORTRAIT_DOWN ||
             currentOrientation === ScreenOrientation.Orientation.UNKNOWN ? (
               <Portrait
-                uiState={uiState}
                 hideSpList={isHideSpList}
                 setHideSpList={setIsHideSpList}
-                spList={spList}
                 clearSpList={clearSpList}
                 renderSpListItem={renderSpListItem}
                 isScanning={isScanning}
@@ -136,10 +132,8 @@ export default function Index() {
               />
             ) : (
               <Landscape
-                uiState={uiState}
                 hideSpList={isHideSpList}
                 setHideSpList={setIsHideSpList}
-                spList={spList}
                 clearSpList={clearSpList}
                 renderSpListItem={renderSpListItem}
                 isScanning={isScanning}

@@ -8,16 +8,13 @@ import {
   View,
 } from "react-native";
 import TextPairV from "@/components/index/TextPairV";
-import { UiState } from "@/constants/UiState";
 import { SpListItemProps } from "@/components/index/SpListItem";
 import DeviceBtn from "./DeviceBtn";
 import { useAppSelector } from "@/hooks/useApp";
 
 const Portrait = ({
-  uiState,
   hideSpList,
   setHideSpList,
-  spList,
   clearSpList,
   renderSpListItem,
   isScanning,
@@ -27,10 +24,8 @@ const Portrait = ({
   stopScan,
   showDeviceBottomSheet,
 }: {
-  uiState: UiState;
   hideSpList: boolean;
   setHideSpList: React.Dispatch<React.SetStateAction<boolean>>;
-  spList: SpListItemProps[];
   clearSpList: () => void;
   renderSpListItem: ({ item }: { item: SpListItemProps }) => JSX.Element;
   isScanning: boolean;
@@ -40,9 +35,8 @@ const Portrait = ({
   stopScan: () => void;
   showDeviceBottomSheet: () => void;
 }) => {
-  const { numShootValue, maxShootPowerValue } = useAppSelector(
-    (state) => state.index
-  );
+  const { numShootValue, maxShootPowerValue, shootPowerValue, spList } =
+    useAppSelector((state) => state.index);
   return (
     <>
       <View style={styles.topContainer}>
@@ -54,7 +48,7 @@ const Portrait = ({
         adjustsFontSizeToFit
         numberOfLines={1}
       >
-        {uiState.shootPowerValue}
+        {shootPowerValue}
       </Text>
       <View style={styles.spListTitleContainer}>
         <TouchableOpacity onPress={() => setHideSpList(!hideSpList)}>

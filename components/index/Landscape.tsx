@@ -2,15 +2,12 @@ import { Button, Divider } from "@rneui/themed";
 import React from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import TextPairV from "@/components/index/TextPairV";
-import { UiState } from "@/constants/UiState";
 import { SpListItemProps } from "@/components/index/SpListItem";
 import DeviceBtn from "./DeviceBtn";
 import { useAppSelector } from "@/hooks/useApp";
 
 const Landscape = ({
-  uiState,
   hideSpList,
-  spList,
   clearSpList,
   renderSpListItem,
   isScanning,
@@ -20,10 +17,8 @@ const Landscape = ({
   stopScan,
   showDeviceBottomSheet,
 }: {
-  uiState: UiState;
   hideSpList: boolean;
   setHideSpList: React.Dispatch<React.SetStateAction<boolean>>;
-  spList: SpListItemProps[];
   clearSpList: () => void;
   renderSpListItem: ({ item }: { item: SpListItemProps }) => JSX.Element;
   isScanning: boolean;
@@ -33,9 +28,8 @@ const Landscape = ({
   stopScan: () => void;
   showDeviceBottomSheet: () => void;
 }) => {
-  const { numShootValue, maxShootPowerValue } = useAppSelector(
-    (state) => state.index
-  );
+  const { numShootValue, maxShootPowerValue, shootPowerValue, spList } =
+    useAppSelector((state) => state.index);
   return (
     <View style={styles.container}>
       <View style={styles.leftContainer}>
@@ -44,7 +38,7 @@ const Landscape = ({
           adjustsFontSizeToFit
           numberOfLines={1}
         >
-          {uiState.shootPowerValue}
+          {shootPowerValue}
         </Text>
         <Text
           style={styles.connectionStatus}
