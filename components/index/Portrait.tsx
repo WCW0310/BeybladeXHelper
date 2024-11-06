@@ -35,8 +35,9 @@ const Portrait = ({
   stopScan: () => void;
   showDeviceBottomSheet: () => void;
 }) => {
-  const { numShootValue, maxShootPowerValue, shootPowerValue, spList } =
-    useAppSelector((state) => state.index);
+  const { numShootValue, maxShootPowerValue, spList } = useAppSelector(
+    (state) => state.index
+  );
   return (
     <>
       <View style={styles.topContainer}>
@@ -48,7 +49,7 @@ const Portrait = ({
         adjustsFontSizeToFit
         numberOfLines={1}
       >
-        {shootPowerValue}
+        {spList.length > 0 ? spList[0].spValue : "0"}
       </Text>
       <View style={styles.spListTitleContainer}>
         <TouchableOpacity onPress={() => setHideSpList(!hideSpList)}>

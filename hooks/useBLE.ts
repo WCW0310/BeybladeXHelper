@@ -206,7 +206,7 @@ function useBLE() {
       }
       if (index === 7) {
         if (checksum !== rxValues[16]) {
-          dispatch(actions.updateShootPower(-1));
+          console.log("handleCharacteristicChanged checksum error");
           return;
         }
         const maxShootPower = shootPowerLog[6][8] * 256 + shootPowerLog[6][7];
