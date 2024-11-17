@@ -90,7 +90,7 @@ const indexSlice = createSlice({
       state.spList = [
         {
           id: numShoot + deviceId,
-          shootNum: numShoot.toString(),
+          shootNum: state.numShootValue.toString(),
           spValue: latestShootPower.toString(),
           deviceNo:
             state.connectedDevices.findIndex(
