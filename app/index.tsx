@@ -28,7 +28,7 @@ const renderSpListItem = ({ item }: { item: SpListItemProps }) => (
     id={item.id}
     shootNum={item.shootNum}
     spValue={item.spValue}
-    deviceNo={item.deviceNo}
+    deviceName={item.deviceName}
   />
 );
 
@@ -101,7 +101,6 @@ export default function Index() {
         id={item.device.id}
         shootNum={item.uiState.numShootValue ?? ""}
         maxSpValue={item.uiState.maxShootPowerValue ?? ""}
-        deviceName={item.uiState.deviceName ?? ""}
         device={item.device}
         disconnectDevice={disconnectDevice}
       />

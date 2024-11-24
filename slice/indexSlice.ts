@@ -1,5 +1,6 @@
 import { SpListItemProps } from "@/components/index/SpListItem";
 import { ConnectedDeviceState } from "@/constants/ConnectedDeviceState";
+import { storage } from "@/managers/StorageManager";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Device } from "react-native-ble-plx";
 
@@ -42,9 +43,15 @@ const indexSlice = createSlice({
       state.spList = initialState.spList;
     },
     addConnectedDevice: (state, action: PayloadAction<Device>) => {
+      const deviceId = action.payload.id;
+      let deviceName = storage.getString(deviceId);
+      if (!deviceName) {
+        deviceName = `裝置${(state.connectedDevices.length + 1).toString()}`;
+        storage.set(deviceId, deviceName);
+      }
       state.connectedDevices.push({
         device: action.payload,
-        uiState: { deviceName: (state.connectedDevices.length + 1).toString() },
+        uiState: { deviceName },
       });
     },
     removeConnectedDevice: (state, action: PayloadAction<Device | null>) => {
@@ -92,10 +99,7 @@ const indexSlice = createSlice({
           id: numShoot + deviceId,
           shootNum: state.numShootValue.toString(),
           spValue: latestShootPower.toString(),
-          deviceNo:
-            state.connectedDevices.findIndex(
-              (value) => value.device.id === deviceId
-            ) + 1,
+          deviceName: storage.getString(deviceId) ?? "",
         },
         ...state.spList,
       ];

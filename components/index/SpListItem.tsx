@@ -5,10 +5,10 @@ export type SpListItemProps = {
   id: string;
   shootNum: string;
   spValue: string;
-  deviceNo: number;
+  deviceName: string;
 };
 
-const SpListItem = ({ shootNum, spValue, deviceNo }: SpListItemProps) => {
+const SpListItem = ({ shootNum, spValue, deviceName }: SpListItemProps) => {
   return (
     <View style={styles.container}>
       <Text
@@ -21,8 +21,8 @@ const SpListItem = ({ shootNum, spValue, deviceNo }: SpListItemProps) => {
         adjustsFontSizeToFit
         numberOfLines={1}
       >{`${spValue}`}</Text>
-      <Text style={styles.deviceNo} adjustsFontSizeToFit numberOfLines={1}>
-        {deviceNo === 0 ? "" : `裝置${deviceNo}`}
+      <Text style={styles.deviceName} adjustsFontSizeToFit numberOfLines={1}>
+        {`${deviceName}`}
       </Text>
     </View>
   );
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "left",
   },
-  deviceNo: {
+  deviceName: {
     fontSize: 20,
     textAlign: "left",
   },
