@@ -35,7 +35,6 @@ const DeviceListItem = ({
             name="edit"
             type="antdesign"
             onPress={() => {
-              console.log("edit pressed");
               setIsEditDeviceDialogVisible(true);
             }}
           ></Icon>
