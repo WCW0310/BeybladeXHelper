@@ -1,27 +1,17 @@
-import { createTheme, ThemeProvider } from "@rneui/themed";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { StyleSheet, useWindowDimensions } from "react-native";
 import useBLE from "@/hooks/useBLE";
 import SpListItem, { SpListItemProps } from "@/components/index/SpListItem";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 import * as ScreenOrientation from "expo-screen-orientation";
 import Portrait from "../components/index/Portrait";
 import Landscape from "../components/index/Landscape";
 import { activateKeepAwakeAsync, deactivateKeepAwake } from "expo-keep-awake";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import BottomSheet from "@gorhom/bottom-sheet";
 import DeviceListItem from "@/components/index/DeviceListItem";
 import { ConnectedDeviceState } from "@/constants/ConnectedDeviceState";
 import DeviceBottomSheet from "@/components/index/DeviceBottomSheet";
 import { useAppSelector } from "@/hooks/useApp";
-
-const theme = createTheme({
-  lightColors: {},
-  darkColors: {},
-  components: {
-    Button: { radius: 12 },
-  },
-});
 
 const renderSpListItem = ({ item }: { item: SpListItemProps }) => (
   <SpListItem
@@ -109,53 +99,46 @@ export default function Index() {
   );
 
   return (
-    <GestureHandlerRootView>
-      <SafeAreaProvider>
-        <ThemeProvider theme={theme}>
-          <SafeAreaView style={styles.container}>
-            {currentOrientation === ScreenOrientation.Orientation.PORTRAIT_UP ||
-            currentOrientation ===
-              ScreenOrientation.Orientation.PORTRAIT_DOWN ||
-            currentOrientation === ScreenOrientation.Orientation.UNKNOWN ? (
-              <Portrait
-                hideSpList={isHideSpList}
-                setHideSpList={setIsHideSpList}
-                clearSpList={clearSpList}
-                renderSpListItem={renderSpListItem}
-                isScanning={isScanning}
-                isConnecting={isConnecting}
-                isConnected={isConnected}
-                scanDevices={scanDevices}
-                stopScan={stopScan}
-                showDeviceBottomSheet={showDeviceBottomSheet}
-              />
-            ) : (
-              <Landscape
-                hideSpList={isHideSpList}
-                setHideSpList={setIsHideSpList}
-                clearSpList={clearSpList}
-                renderSpListItem={renderSpListItem}
-                isScanning={isScanning}
-                isConnecting={isConnecting}
-                isConnected={isConnected}
-                scanDevices={scanDevices}
-                stopScan={stopScan}
-                showDeviceBottomSheet={showDeviceBottomSheet}
-              />
-            )}
-            <DeviceBottomSheet
-              bottomSheetRef={bottomSheetRef}
-              connectedDevices={connectedDevices}
-              renderDeviceListItem={renderDeviceListItem}
-              isScanning={isScanning}
-              isConnecting={isConnecting}
-              scanDevices={scanDevices}
-              stopScan={stopScan}
-            />
-          </SafeAreaView>
-        </ThemeProvider>
-      </SafeAreaProvider>
-    </GestureHandlerRootView>
+    <SafeAreaView style={styles.container}>
+      {currentOrientation === ScreenOrientation.Orientation.PORTRAIT_UP ||
+      currentOrientation === ScreenOrientation.Orientation.PORTRAIT_DOWN ||
+      currentOrientation === ScreenOrientation.Orientation.UNKNOWN ? (
+        <Portrait
+          hideSpList={isHideSpList}
+          setHideSpList={setIsHideSpList}
+          clearSpList={clearSpList}
+          renderSpListItem={renderSpListItem}
+          isScanning={isScanning}
+          isConnecting={isConnecting}
+          isConnected={isConnected}
+          scanDevices={scanDevices}
+          stopScan={stopScan}
+          showDeviceBottomSheet={showDeviceBottomSheet}
+        />
+      ) : (
+        <Landscape
+          hideSpList={isHideSpList}
+          setHideSpList={setIsHideSpList}
+          clearSpList={clearSpList}
+          renderSpListItem={renderSpListItem}
+          isScanning={isScanning}
+          isConnecting={isConnecting}
+          isConnected={isConnected}
+          scanDevices={scanDevices}
+          stopScan={stopScan}
+          showDeviceBottomSheet={showDeviceBottomSheet}
+        />
+      )}
+      <DeviceBottomSheet
+        bottomSheetRef={bottomSheetRef}
+        connectedDevices={connectedDevices}
+        renderDeviceListItem={renderDeviceListItem}
+        isScanning={isScanning}
+        isConnecting={isConnecting}
+        scanDevices={scanDevices}
+        stopScan={stopScan}
+      />
+    </SafeAreaView>
   );
 }
 
