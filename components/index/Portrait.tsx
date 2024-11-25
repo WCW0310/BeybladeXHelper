@@ -11,6 +11,7 @@ import TextPairV from "@/components/index/TextPairV";
 import { SpListItemProps } from "@/components/index/SpListItem";
 import DeviceBtn from "./DeviceBtn";
 import { useAppSelector } from "@/hooks/useApp";
+import { router } from "expo-router";
 
 const Portrait = ({
   hideSpList,
@@ -58,7 +59,7 @@ const Portrait = ({
             type="antdesign"
             color="black"
             size={30}
-          ></Icon>
+          />
         </TouchableOpacity>
         <Text style={styles.spListTitle} adjustsFontSizeToFit numberOfLines={1}>
           {"最近紀錄"}
@@ -103,6 +104,13 @@ const Portrait = ({
             stopScan={stopScan}
             showDeviceBottomSheet={showDeviceBottomSheet}
           />
+          <TouchableOpacity
+            onPress={() => {
+              router.navigate("/settings");
+            }}
+          >
+            <Icon name="setting" type="antdesign" color="black" size={30} />
+          </TouchableOpacity>
         </View>
       </View>
     </>

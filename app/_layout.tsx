@@ -23,7 +23,10 @@ export default function RootLayout() {
               <Stack.Screen name="index" options={{ headerShown: false }} />
               <Stack.Screen
                 name="settings"
-                options={{ presentation: "modal", title: "設定" }}
+                options={{
+                  headerShown: false,
+                  presentation: "modal",
+                }}
               />
             </Stack>
           </ThemeProvider>
