@@ -4,7 +4,9 @@ import { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 export default function RememberedDevices() {
-  const rememberedDeviceKeys = storage.getAllKeys();
+  const [rememberedDeviceKeys, setRememberedDeviceKeys] = useState<string[]>(
+    storage.getAllKeys()
+  );
   const [isEditDeviceDialogVisible, setIsEditDeviceDialogVisible] =
     useState(false);
   return (
@@ -19,6 +21,16 @@ export default function RememberedDevices() {
               }}
             >
               <Icon name="edit" type="antdesign" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                storage.delete(key);
+                setRememberedDeviceKeys(
+                  rememberedDeviceKeys.filter((value) => value !== key)
+                );
+              }}
+            >
+              <Icon name="delete" type="antdesign" color={"red"} />
             </TouchableOpacity>
           </View>
         );
@@ -35,5 +47,7 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
   },
 });
