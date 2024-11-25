@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useState } from "react";
 import { Button, Card, Icon } from "@rneui/themed";
 import { Device } from "react-native-ble-plx";
@@ -31,13 +31,13 @@ const DeviceListItem = ({
             adjustsFontSizeToFit
             numberOfLines={1}
           >{`${deviceName}`}</Card.Title>
-          <Icon
-            name="edit"
-            type="antdesign"
+          <TouchableOpacity
             onPress={() => {
               setIsEditDeviceDialogVisible(true);
             }}
-          ></Icon>
+          >
+            <Icon name="edit" type="antdesign" />
+          </TouchableOpacity>
         </View>
         <Card.Divider />
         <View style={styles.contentContainer}>
