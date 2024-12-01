@@ -1,3 +1,4 @@
+import EditDeviceDialog from "@/components/settings/EditDeviceDialog";
 import { storage } from "@/managers/StorageManager";
 import { Icon } from "@rneui/themed";
 import { useState } from "react";
@@ -7,8 +8,13 @@ export default function RememberedDevices() {
   const [rememberedDeviceKeys, setRememberedDeviceKeys] = useState<string[]>(
     storage.getAllKeys()
   );
-  const [isEditDeviceDialogVisible, setIsEditDeviceDialogVisible] =
-    useState(false);
+  const [editDeviceDialogState, setEditDeviceDialogState] = useState<{
+    visible: boolean;
+    deviceId: string;
+  }>({
+    visible: false,
+    deviceId: "",
+  });
   return (
     <View style={styles.container}>
       {rememberedDeviceKeys.map((key) => {
@@ -17,7 +23,7 @@ export default function RememberedDevices() {
             <Text>{storage.getString(key)}</Text>
             <TouchableOpacity
               onPress={() => {
-                setIsEditDeviceDialogVisible(true);
+                setEditDeviceDialogState({ visible: true, deviceId: key });
               }}
             >
               <Icon name="edit" type="antdesign" />
@@ -35,6 +41,18 @@ export default function RememberedDevices() {
           </View>
         );
       })}
+      <EditDeviceDialog
+        isEditDeviceDialogVisible={editDeviceDialogState.visible}
+        setIsEditDeviceDialogVisible={(newState) => {
+          setEditDeviceDialogState((prevState) => {
+            return {
+              visible: newState,
+              deviceId: prevState.deviceId,
+            };
+          });
+        }}
+        deviceId={editDeviceDialogState.deviceId}
+      />
     </View>
   );
 }

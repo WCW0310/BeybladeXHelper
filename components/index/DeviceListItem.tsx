@@ -2,8 +2,8 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useState } from "react";
 import { Button, Card, Icon } from "@rneui/themed";
 import { Device } from "react-native-ble-plx";
-import Dialog from "react-native-dialog";
 import { storage } from "@/managers/StorageManager";
+import EditDeviceDialog from "../settings/EditDeviceDialog";
 
 export type DeviceListItemProps = {
   id: string;
@@ -22,7 +22,6 @@ const DeviceListItem = ({
   const deviceName = storage.getString(device.id) ?? "";
   const [isEditDeviceDialogVisible, setIsEditDeviceDialogVisible] =
     useState(false);
-  const [editDeviceName, setEditDeviceName] = useState(deviceName);
   return (
     <>
       <Card containerStyle={styles.container}>
@@ -62,31 +61,11 @@ const DeviceListItem = ({
           </View>
         </View>
       </Card>
-      <View>
-        <Dialog.Container visible={isEditDeviceDialogVisible}>
-          <Dialog.Title>更新裝置名稱</Dialog.Title>
-          <Dialog.Input
-            placeholder="新裝置名稱"
-            value={editDeviceName}
-            onChangeText={(text: string) => {
-              setEditDeviceName(text);
-            }}
-          ></Dialog.Input>
-          <Dialog.Button
-            label="取消"
-            onPress={() => {
-              setIsEditDeviceDialogVisible(false);
-            }}
-          />
-          <Dialog.Button
-            label="確認"
-            onPress={() => {
-              setIsEditDeviceDialogVisible(false);
-              storage.set(device.id, editDeviceName);
-            }}
-          />
-        </Dialog.Container>
-      </View>
+      <EditDeviceDialog
+        isEditDeviceDialogVisible={isEditDeviceDialogVisible}
+        setIsEditDeviceDialogVisible={setIsEditDeviceDialogVisible}
+        deviceId={device.id}
+      />
     </>
   );
 };
