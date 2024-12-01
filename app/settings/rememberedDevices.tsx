@@ -5,7 +5,7 @@ import { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 export default function RememberedDevices() {
-  const [rememberedDeviceKeys, setRememberedDeviceKeys] = useState<string[]>(
+  const [rememberedDevicesKeys, setRememberedDevicesKeys] = useState<string[]>(
     storage.getAllKeys()
   );
   const [editDeviceDialogState, setEditDeviceDialogState] = useState<{
@@ -17,7 +17,7 @@ export default function RememberedDevices() {
   });
   return (
     <View style={styles.container}>
-      {rememberedDeviceKeys.map((key) => {
+      {rememberedDevicesKeys.map((key) => {
         return (
           <View key={key} style={styles.itemContainer}>
             <Text>{storage.getString(key)}</Text>
@@ -31,8 +31,8 @@ export default function RememberedDevices() {
             <TouchableOpacity
               onPress={() => {
                 storage.delete(key);
-                setRememberedDeviceKeys(
-                  rememberedDeviceKeys.filter((value) => value !== key)
+                setRememberedDevicesKeys(
+                  rememberedDevicesKeys.filter((value) => value !== key)
                 );
               }}
             >
