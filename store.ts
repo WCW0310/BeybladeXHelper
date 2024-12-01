@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import indexSlice from "./slice/indexSlice";
+import rememberedDevicesSlice from "./slice/rememberedDevicesSlice";
 
 export const store = configureStore({
   reducer: {
     index: indexSlice,
+    rememberedDevices: rememberedDevicesSlice,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({

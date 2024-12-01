@@ -1,12 +1,17 @@
 import EditDeviceDialog from "@/components/settings/EditDeviceDialog";
-import { storage } from "@/managers/StorageManager";
+import { useAppDispatch, useAppSelector } from "@/hooks/useApp";
 import { Icon } from "@rneui/themed";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { actions } from "@/slice/rememberedDevicesSlice";
 
 export default function RememberedDevices() {
-  const [rememberedDevicesKeys, setRememberedDevicesKeys] = useState<string[]>(
-    storage.getAllKeys()
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(actions.getRememberedDevicesFromLocalStorage());
+  }, [dispatch]);
+  const { rememberedDevices } = useAppSelector(
+    (state) => state.rememberedDevices
   );
   const [editDeviceDialogState, setEditDeviceDialogState] = useState<{
     visible: boolean;
@@ -17,10 +22,10 @@ export default function RememberedDevices() {
   });
   return (
     <View style={styles.container}>
-      {rememberedDevicesKeys.map((key) => {
+      {Object.keys(rememberedDevices).map((key) => {
         return (
           <View key={key} style={styles.itemContainer}>
-            <Text>{storage.getString(key)}</Text>
+            <Text>{rememberedDevices[key]}</Text>
             <TouchableOpacity
               onPress={() => {
                 setEditDeviceDialogState({ visible: true, deviceId: key });
@@ -30,10 +35,7 @@ export default function RememberedDevices() {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                storage.delete(key);
-                setRememberedDevicesKeys(
-                  rememberedDevicesKeys.filter((value) => value !== key)
-                );
+                dispatch(actions.removeDevice(key));
               }}
             >
               <Icon name="delete" type="antdesign" color={"red"} />

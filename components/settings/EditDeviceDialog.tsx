@@ -1,7 +1,8 @@
 import { StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import Dialog from "react-native-dialog";
-import { storage } from "@/managers/StorageManager";
+import { useAppDispatch, useAppSelector } from "@/hooks/useApp";
+import { actions } from "@/slice/rememberedDevicesSlice";
 
 const EditDeviceDialog = ({
   isEditDeviceDialogVisible,
@@ -12,12 +13,19 @@ const EditDeviceDialog = ({
   setIsEditDeviceDialogVisible: (newState: boolean) => void;
   deviceId: string;
 }) => {
-  let deviceName = storage.getString(deviceId) ?? "";
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(actions.getRememberedDevicesFromLocalStorage());
+  }, [dispatch]);
+  const { rememberedDevices } = useAppSelector(
+    (state) => state.rememberedDevices
+  );
+  let deviceName: string;
   const [editDeviceName, setEditDeviceName] = useState("");
   useEffect(() => {
-    deviceName = storage.getString(deviceId) ?? "";
+    deviceName = rememberedDevices[deviceId] ?? "";
     setEditDeviceName(deviceName);
-  }, [deviceId]);
+  }, [deviceId, rememberedDevices]);
   return (
     <Dialog.Container visible={isEditDeviceDialogVisible}>
       <Dialog.Title>更新裝置名稱</Dialog.Title>
@@ -38,7 +46,12 @@ const EditDeviceDialog = ({
         label="確認"
         onPress={() => {
           setIsEditDeviceDialogVisible(false);
-          storage.set(deviceId, editDeviceName);
+          dispatch(
+            actions.updateDevice({
+              deviceId,
+              deviceName: editDeviceName,
+            })
+          );
         }}
       />
     </Dialog.Container>
