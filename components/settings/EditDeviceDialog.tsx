@@ -20,11 +20,9 @@ const EditDeviceDialog = ({
   const { rememberedDevices } = useAppSelector(
     (state) => state.rememberedDevices
   );
-  let deviceName: string;
   const [editDeviceName, setEditDeviceName] = useState("");
   useEffect(() => {
-    deviceName = rememberedDevices[deviceId] ?? "";
-    setEditDeviceName(deviceName);
+    setEditDeviceName(rememberedDevices[deviceId] ?? "");
   }, [deviceId, rememberedDevices]);
   return (
     <Dialog.Container visible={isEditDeviceDialogVisible}>

@@ -13,6 +13,7 @@ export default function RememberedDevices() {
   const { rememberedDevices } = useAppSelector(
     (state) => state.rememberedDevices
   );
+  const { connectedDevices } = useAppSelector((state) => state.index);
   const [editDeviceDialogState, setEditDeviceDialogState] = useState<{
     visible: boolean;
     deviceId: string;
@@ -33,13 +34,21 @@ export default function RememberedDevices() {
             >
               <Icon name="edit" type="antdesign" />
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                dispatch(actions.removeDevice(key));
-              }}
-            >
-              <Icon name="delete" type="antdesign" color={"red"} />
-            </TouchableOpacity>
+            {connectedDevices.find((value) => value.device.id === key) ? (
+              <Text>已連結</Text>
+            ) : (
+              <TouchableOpacity
+                onPress={() => {
+                  if (
+                    connectedDevices.find((value) => value.device.id === key)
+                  ) {
+                  }
+                  dispatch(actions.removeDevice(key));
+                }}
+              >
+                <Icon name="delete" type="antdesign" color={"red"} />
+              </TouchableOpacity>
+            )}
           </View>
         );
       })}

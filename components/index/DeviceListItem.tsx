@@ -1,8 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Button, Card, Icon } from "@rneui/themed";
 import { Device } from "react-native-ble-plx";
-import { storage } from "@/managers/StorageManager";
 import EditDeviceDialog from "../settings/EditDeviceDialog";
 import { useAppSelector } from "@/hooks/useApp";
 
@@ -20,13 +19,13 @@ const DeviceListItem = ({
   device,
   disconnectDevice,
 }: DeviceListItemProps) => {
-  let deviceName = storage.getString(device.id) ?? "";
   const { rememberedDevices } = useAppSelector(
     (state) => state.rememberedDevices
   );
-  useEffect(() => {
-    deviceName = storage.getString(device.id) ?? "";
-  }, [rememberedDevices]);
+  const deviceName = useMemo(
+    () => rememberedDevices[device.id] ?? "",
+    [rememberedDevices, device]
+  );
   const [isEditDeviceDialogVisible, setIsEditDeviceDialogVisible] =
     useState(false);
   return (
