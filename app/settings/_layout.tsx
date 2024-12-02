@@ -1,4 +1,5 @@
-import { Stack } from "expo-router";
+import { Icon } from "@rneui/themed";
+import { router, Stack } from "expo-router";
 
 export default function RootLayout() {
   return (
@@ -7,6 +8,9 @@ export default function RootLayout() {
         name="index"
         options={{
           title: "設定",
+          headerRight: () => (
+            <Icon name="close" size={30} onPress={() => router.back()} />
+          ),
         }}
       />
       <Stack.Screen
