@@ -1,17 +1,11 @@
-import { Button, Divider, Icon } from "@rneui/themed";
+import { Button, Divider } from "@rneui/themed";
 import React from "react";
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 import TextPairV from "@/components/index/TextPairV";
 import { SpListItemProps } from "@/components/index/SpListItem";
 import DeviceBtn from "./DeviceBtn";
 import { useAppSelector } from "@/hooks/useApp";
-import { router } from "expo-router";
+import ToSettingBtn from "./ToSettingBtn";
 
 const Landscape = ({
   hideSpList,
@@ -70,13 +64,7 @@ const Landscape = ({
             stopScan={stopScan}
             showDeviceBottomSheet={showDeviceBottomSheet}
           />
-          <TouchableOpacity
-            onPress={() => {
-              router.navigate("/settings");
-            }}
-          >
-            <Icon name="setting" type="antdesign" color="black" size={30} />
-          </TouchableOpacity>
+          <ToSettingBtn style={styles.toSettingBtn} />
         </View>
       </View>
       <Divider style={styles.divider} />
@@ -146,9 +134,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
+    position: "relative",
   },
   connectBtn: {
     alignSelf: "center",
+  },
+  toSettingBtn: {
+    position: "absolute",
+    right: 10,
   },
   divider: {
     borderWidth: 1,

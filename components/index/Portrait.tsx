@@ -11,7 +11,7 @@ import TextPairV from "@/components/index/TextPairV";
 import { SpListItemProps } from "@/components/index/SpListItem";
 import DeviceBtn from "./DeviceBtn";
 import { useAppSelector } from "@/hooks/useApp";
-import { router } from "expo-router";
+import ToSettingBtn from "./ToSettingBtn";
 
 const Portrait = ({
   hideSpList,
@@ -104,13 +104,7 @@ const Portrait = ({
             stopScan={stopScan}
             showDeviceBottomSheet={showDeviceBottomSheet}
           />
-          <TouchableOpacity
-            onPress={() => {
-              router.navigate("/settings");
-            }}
-          >
-            <Icon name="setting" type="antdesign" color="black" size={30} />
-          </TouchableOpacity>
+          <ToSettingBtn style={styles.toSettingBtn} />
         </View>
       </View>
     </>
@@ -146,6 +140,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
+    position: "relative",
+  },
+  toSettingBtn: {
+    position: "absolute",
+    right: 20,
   },
   divider: {
     borderWidth: 1,
