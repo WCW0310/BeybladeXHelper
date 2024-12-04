@@ -44,12 +44,12 @@ const styles = StyleSheet.create({
   spValue: {
     fontSize: 30,
     fontWeight: "bold",
-    textAlign: "left",
+    textAlign: "center",
     width: "35%",
   },
   deviceName: {
     fontSize: 20,
-    textAlign: "left",
+    textAlign: "center",
     width: "35%",
   },
 });
