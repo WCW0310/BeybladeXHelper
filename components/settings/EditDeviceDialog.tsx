@@ -1,4 +1,3 @@
-import { StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import Dialog from "react-native-dialog";
 import { useAppDispatch, useAppSelector } from "@/hooks/useApp";
@@ -57,5 +56,3 @@ const EditDeviceDialog = ({
 };
 
 export default EditDeviceDialog;
-
-const styles = StyleSheet.create({});
