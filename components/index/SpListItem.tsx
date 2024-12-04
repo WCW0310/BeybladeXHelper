@@ -39,14 +39,17 @@ const styles = StyleSheet.create({
   shootNum: {
     fontSize: 20,
     textAlign: "center",
+    width: "20%",
   },
   spValue: {
     fontSize: 30,
     fontWeight: "bold",
     textAlign: "left",
+    width: "35%",
   },
   deviceName: {
     fontSize: 20,
     textAlign: "left",
+    width: "35%",
   },
 });
