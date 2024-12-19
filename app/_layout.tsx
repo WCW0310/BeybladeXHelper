@@ -4,6 +4,7 @@ import { store } from "@/store";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
+import { useColorScheme } from "react-native";
 
 const theme = createTheme({
   components: {
@@ -12,6 +13,7 @@ const theme = createTheme({
 });
 
 export default function RootLayout() {
+  theme.mode = useColorScheme() ?? "light"; // TODO: 套用 App 本地紀錄在設定的主題模式
   return (
     <Provider store={store}>
       <GestureHandlerRootView>
