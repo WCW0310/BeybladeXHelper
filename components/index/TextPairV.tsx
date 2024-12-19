@@ -1,5 +1,6 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import React from "react";
+import { makeStyles } from "@rneui/themed";
 
 const TextPairV = ({
   title,
@@ -10,6 +11,7 @@ const TextPairV = ({
   value: string;
   scale?: number;
 }) => {
+  const styles = useStyles();
   return (
     <View style={styles.container}>
       <Text
@@ -32,11 +34,11 @@ const TextPairV = ({
 
 export default TextPairV;
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((theme) => ({
   container: {
     flexDirection: "column",
     alignItems: "center",
   },
-  title: { fontSize: 20, fontWeight: "bold" },
-  value: { fontSize: 40, fontWeight: "bold" },
-});
+  title: { fontSize: 20, fontWeight: "bold", color: theme.colors.black },
+  value: { fontSize: 40, fontWeight: "bold", color: theme.colors.black },
+}));

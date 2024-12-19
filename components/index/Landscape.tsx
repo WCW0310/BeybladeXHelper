@@ -1,6 +1,6 @@
-import { Button, Divider } from "@rneui/themed";
+import { Button, Divider, makeStyles } from "@rneui/themed";
 import React from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { FlatList, Text, View } from "react-native";
 import TextPairV from "@/components/index/TextPairV";
 import { SpListItemProps } from "@/components/index/SpListItem";
 import DeviceBtn from "./DeviceBtn";
@@ -29,6 +29,7 @@ const Landscape = ({
   stopScan: () => void;
   showDeviceBottomSheet: () => void;
 }) => {
+  const styles = useStyles();
   const { numShootValue, maxShootPowerValue, spList } = useAppSelector(
     (state) => state.index
   );
@@ -107,7 +108,7 @@ const Landscape = ({
 
 export default Landscape;
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((theme) => ({
   container: {
     flexDirection: "row",
     flex: 1,
@@ -123,12 +124,14 @@ const styles = StyleSheet.create({
     fontSize: 150,
     textAlign: "center",
     fontWeight: "bold",
+    color: theme.colors.black,
   },
   connectionStatus: {
     fontSize: 20,
     textAlign: "center",
     fontWeight: "bold",
     marginBottom: 8,
+    color: theme.colors.black,
   },
   connectBtnContainer: {
     flexDirection: "row",
@@ -146,6 +149,7 @@ const styles = StyleSheet.create({
   divider: {
     borderWidth: 1,
     margin: 8,
+    borderColor: theme.colors.black,
   },
   rightContainer: {
     flexDirection: "column",
@@ -162,8 +166,9 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     marginTop: 8,
+    color: theme.colors.black,
   },
   clearBtn: {
     alignSelf: "center",
   },
-});
+}));

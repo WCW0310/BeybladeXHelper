@@ -6,8 +6,6 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
 
 const theme = createTheme({
-  lightColors: {},
-  darkColors: {},
   components: {
     Button: { radius: 12 },
   },

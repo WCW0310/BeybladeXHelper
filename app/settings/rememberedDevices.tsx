@@ -1,11 +1,12 @@
 import EditDeviceDialog from "@/components/settings/EditDeviceDialog";
 import { useAppDispatch, useAppSelector } from "@/hooks/useApp";
-import { Icon } from "@rneui/themed";
+import { Icon, makeStyles } from "@rneui/themed";
 import { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { actions } from "@/slice/rememberedDevicesSlice";
 
 export default function RememberedDevices() {
+  const styles = useStyles();
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(actions.getRememberedDevicesFromLocalStorage());
@@ -26,7 +27,7 @@ export default function RememberedDevices() {
       {Object.keys(rememberedDevices).map((key) => {
         return (
           <View key={key} style={styles.itemContainer}>
-            <Text>{rememberedDevices[key]}</Text>
+            <Text style={styles.text}>{rememberedDevices[key]}</Text>
             <TouchableOpacity
               onPress={() => {
                 setEditDeviceDialogState({ visible: true, deviceId: key });
@@ -68,8 +69,9 @@ export default function RememberedDevices() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((theme) => ({
   container: {
+    backgroundColor: theme.colors.background,
     flex: 1,
     padding: 8,
   },
@@ -78,4 +80,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-around",
   },
-});
+  text: {
+    color: theme.colors.black,
+  },
+}));

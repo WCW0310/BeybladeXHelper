@@ -1,8 +1,9 @@
-import { Button } from "@rneui/themed";
+import { Button, makeStyles } from "@rneui/themed";
 import { router } from "expo-router";
-import { View, StyleSheet } from "react-native";
+import { View } from "react-native";
 
 export default function Settings() {
+  const styles = useStyles();
   return (
     <View style={styles.container}>
       <Button
@@ -15,9 +16,10 @@ export default function Settings() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((theme) => ({
   container: {
+    backgroundColor: theme.colors.background,
     flex: 1,
     padding: 8,
   },
-});
+}));

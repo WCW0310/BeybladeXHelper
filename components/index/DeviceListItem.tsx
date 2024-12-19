@@ -1,6 +1,6 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import React, { useMemo, useState } from "react";
-import { Button, Card, Icon } from "@rneui/themed";
+import { Button, Card, Icon, makeStyles } from "@rneui/themed";
 import { Device } from "react-native-ble-plx";
 import EditDeviceDialog from "../settings/EditDeviceDialog";
 import { useAppSelector } from "@/hooks/useApp";
@@ -19,6 +19,7 @@ const DeviceListItem = ({
   device,
   disconnectDevice,
 }: DeviceListItemProps) => {
+  const styles = useStyles();
   const { rememberedDevices } = useAppSelector(
     (state) => state.rememberedDevices
   );
@@ -78,7 +79,7 @@ const DeviceListItem = ({
 
 export default DeviceListItem;
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(() => ({
   container: {
     flex: 1,
     borderRadius: 12,
@@ -108,4 +109,4 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
   },
-});
+}));

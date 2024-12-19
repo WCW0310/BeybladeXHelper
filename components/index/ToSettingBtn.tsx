@@ -1,9 +1,10 @@
 import { StyleProp, TouchableOpacity, ViewStyle } from "react-native";
 import React from "react";
 import { router } from "expo-router";
-import { Icon } from "@rneui/themed";
+import { Icon, useTheme } from "@rneui/themed";
 
 const ToSettingBtn = ({ style }: { style?: StyleProp<ViewStyle> }) => {
+  const { theme } = useTheme();
   return (
     <TouchableOpacity
       style={style}
@@ -11,7 +12,12 @@ const ToSettingBtn = ({ style }: { style?: StyleProp<ViewStyle> }) => {
         router.navigate("/settings");
       }}
     >
-      <Icon name="setting" type="antdesign" color="black" size={30} />
+      <Icon
+        name="setting"
+        type="antdesign"
+        color={theme.colors.black}
+        size={30}
+      />
     </TouchableOpacity>
   );
 };

@@ -1,12 +1,6 @@
-import { Button, Icon, Divider } from "@rneui/themed";
+import { Button, Icon, Divider, makeStyles, useTheme } from "@rneui/themed";
 import React from "react";
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import TextPairV from "@/components/index/TextPairV";
 import { SpListItemProps } from "@/components/index/SpListItem";
 import DeviceBtn from "./DeviceBtn";
@@ -36,6 +30,8 @@ const Portrait = ({
   stopScan: () => void;
   showDeviceBottomSheet: () => void;
 }) => {
+  const styles = useStyles();
+  const { theme } = useTheme();
   const { numShootValue, maxShootPowerValue, spList } = useAppSelector(
     (state) => state.index
   );
@@ -57,7 +53,7 @@ const Portrait = ({
           <Icon
             name={hideSpList ? "down" : "up"}
             type="antdesign"
-            color="black"
+            color={theme.colors.black}
             size={30}
           />
         </TouchableOpacity>
@@ -68,7 +64,7 @@ const Portrait = ({
           title={"清除紀錄"}
           disabled={spList.length === 0}
           onPress={clearSpList}
-          color={"primary"}
+          color="primary"
           icon={{ name: "refresh", color: "white" }}
           size="sm"
         />
@@ -113,12 +109,13 @@ const Portrait = ({
 
 export default Portrait;
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((theme) => ({
   topContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
   },
   currentSpValue: {
+    color: theme.colors.black,
     fontSize: 120,
     textAlign: "center",
     fontWeight: "bold",
@@ -128,9 +125,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     alignItems: "center",
   },
-  spListTitle: { fontSize: 20, fontWeight: "bold" },
+  spListTitle: { color: theme.colors.black, fontSize: 20, fontWeight: "bold" },
   bottomContainer: { marginBottom: 16 },
   connectionStatus: {
+    color: theme.colors.black,
     fontSize: 20,
     textAlign: "center",
     fontWeight: "bold",
@@ -150,4 +148,4 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     margin: 8,
   },
-});
+}));

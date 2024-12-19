@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { StyleSheet, useWindowDimensions } from "react-native";
+import { useColorScheme, useWindowDimensions } from "react-native";
 import useBLE from "@/hooks/useBLE";
 import SpListItem, { SpListItemProps } from "@/components/index/SpListItem";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -12,6 +12,7 @@ import DeviceListItem from "@/components/index/DeviceListItem";
 import { ConnectedDeviceState } from "@/constants/ConnectedDeviceState";
 import DeviceBottomSheet from "@/components/index/DeviceBottomSheet";
 import { useAppSelector } from "@/hooks/useApp";
+import { makeStyles, useThemeMode } from "@rneui/themed";
 
 const renderSpListItem = ({ item }: { item: SpListItemProps }) => (
   <SpListItem
@@ -23,6 +24,21 @@ const renderSpListItem = ({ item }: { item: SpListItemProps }) => (
 );
 
 export default function Index() {
+  const styles = useStyles();
+  const colorScheme = useColorScheme();
+  const { mode, setMode } = useThemeMode();
+  useEffect(() => {
+    // 之後要記住選擇的模式
+    if (colorScheme && mode && mode !== colorScheme) {
+      console.log(
+        `mode: ${mode}, colorScheme: ${colorScheme}, 設定主題: ${colorScheme}`
+      );
+      setMode(colorScheme ?? "light");
+    } else {
+      console.log(`不設定主題: ${colorScheme}`);
+    }
+  }, [colorScheme]);
+
   const { width, height } = useWindowDimensions();
 
   const [isHideSpList, setIsHideSpList] = useState(false);
@@ -142,8 +158,9 @@ export default function Index() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((theme) => ({
   container: {
+    backgroundColor: theme.colors.background,
     flex: 1,
   },
-});
+}));

@@ -1,4 +1,4 @@
-import { StyleSheet, Text } from "react-native";
+import { Text } from "react-native";
 import React, { useCallback } from "react";
 import BottomSheet, {
   BottomSheetBackdrop,
@@ -9,7 +9,7 @@ import BottomSheet, {
 } from "@gorhom/bottom-sheet";
 import { ConnectedDeviceState } from "@/constants/ConnectedDeviceState";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Button } from "@rneui/themed";
+import { Button, makeStyles } from "@rneui/themed";
 
 const DeviceBottomSheet = ({
   bottomSheetRef,
@@ -32,6 +32,7 @@ const DeviceBottomSheet = ({
   scanDevices: () => Promise<void>;
   stopScan: () => void;
 }) => {
+  const styles = useStyles();
   const { bottom } = useSafeAreaInsets();
   const renderBackdrop = useCallback(
     (props: BottomSheetBackdropProps) => (
@@ -88,12 +89,14 @@ const DeviceBottomSheet = ({
 
 export default DeviceBottomSheet;
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((theme) => ({
   deviceSettingTitle: {
+    color: theme.colors.black,
     textAlign: "center",
     fontSize: 20,
   },
   deviceSettingListContainer: {
+    backgroundColor: theme.colors.background,
     paddingBottom: 48,
   },
   connectBtn: {
@@ -101,4 +104,4 @@ const styles = StyleSheet.create({
     padding: 12,
     margin: 12,
   },
-});
+}));

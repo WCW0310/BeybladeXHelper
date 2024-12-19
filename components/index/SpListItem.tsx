@@ -1,5 +1,6 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import React from "react";
+import { makeStyles } from "@rneui/themed";
 
 export type SpListItemProps = {
   id: string;
@@ -9,6 +10,7 @@ export type SpListItemProps = {
 };
 
 const SpListItem = ({ shootNum, spValue, deviceName }: SpListItemProps) => {
+  const styles = useStyles();
   return (
     <View style={styles.container}>
       <Text
@@ -30,7 +32,7 @@ const SpListItem = ({ shootNum, spValue, deviceName }: SpListItemProps) => {
 
 export default SpListItem;
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((theme) => ({
   container: {
     flexDirection: "row",
     justifyContent: "space-around",
@@ -40,16 +42,19 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: "center",
     width: "20%",
+    color: theme.colors.black,
   },
   spValue: {
     fontSize: 30,
     fontWeight: "bold",
     textAlign: "center",
     width: "35%",
+    color: theme.colors.black,
   },
   deviceName: {
     fontSize: 20,
     textAlign: "center",
     width: "35%",
+    color: theme.colors.black,
   },
-});
+}));
