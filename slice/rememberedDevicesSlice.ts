@@ -1,4 +1,4 @@
-import { storage } from "@/managers/StorageManager";
+import { getAllRememberedDeviceKeys, storage } from "@/managers/StorageManager";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 type RememberedDevicesState = { rememberedDevices: RememberedDeviceState };
@@ -12,7 +12,7 @@ const rememberedDevicesSlice = createSlice({
   reducers: {
     getRememberedDevicesFromLocalStorage: (state) => {
       const latestState: RememberedDeviceState = {};
-      storage.getAllKeys().forEach((key) => {
+      getAllRememberedDeviceKeys().forEach((key) => {
         latestState[key] = storage.getString(key) ?? "";
       });
       state.rememberedDevices = latestState;

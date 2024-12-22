@@ -5,6 +5,8 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
 import { useColorScheme } from "react-native";
+import { storage } from "@/managers/StorageManager";
+import { CONFIG_KEY_THEME_MODE } from "@/constants/ConfigKey";
 
 const theme = createTheme({
   components: {
@@ -13,7 +15,14 @@ const theme = createTheme({
 });
 
 export default function RootLayout() {
-  theme.mode = useColorScheme() ?? "light"; // TODO: 套用 App 本地紀錄在設定的主題模式
+  const rememberedThemeMode = storage.getString(CONFIG_KEY_THEME_MODE);
+  if (rememberedThemeMode) {
+    theme.mode = rememberedThemeMode as "light" | "dark";
+  } else {
+    const newThemeMode = useColorScheme() ?? "light";
+    theme.mode = newThemeMode;
+    storage.set(CONFIG_KEY_THEME_MODE, newThemeMode);
+  }
   return (
     <Provider store={store}>
       <GestureHandlerRootView>
