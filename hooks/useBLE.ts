@@ -30,10 +30,21 @@ function useBLE() {
     () => connectedDevices.length > 0,
     [connectedDevices]
   );
-  const shootPowerLog = useRef(
-    Array.from({ length: 8 }, () => new Uint8Array(17))
-  ).current;
-  let checksum = useRef(0).current;
+
+  type DeviceData = {
+    shootPowerLog: Uint8Array[];
+    checksum: number;
+  };
+  type DeviceDataMap = Record<DeviceId, DeviceData>;
+  const deviceDataRef = useRef<DeviceDataMap>({}).current;
+  const ensureDeviceDataIsReady = (deviceId: string) => {
+    if (!deviceDataRef[deviceId]) {
+      deviceDataRef[deviceId] = {
+        shootPowerLog: Array.from({ length: 8 }, () => new Uint8Array(17)),
+        checksum: 0,
+      };
+    }
+  };
 
   // 自動停止掃描，並連線
   useEffect(() => {
@@ -183,27 +194,33 @@ function useBLE() {
     if (error) {
       console.log("onDataUpdate error", error);
       return;
-    } else if (!characteristic?.value) {
+    }
+    if (!characteristic?.value) {
       console.log("onDataUpdate No Data was received");
       return;
     }
-    handleCharacteristicChanged(characteristic.value, characteristic.deviceID);
+    const deviceId = characteristic.deviceID;
+    ensureDeviceDataIsReady(deviceId);
+    handleCharacteristicChanged(characteristic.value, deviceId);
   };
 
   const handleCharacteristicChanged = (
     base64Value: string,
     deviceId: DeviceId
   ) => {
+    // 拿到對應裝置的那份 deviceData
+    const deviceData = deviceDataRef[deviceId];
+    // 解構出裡面的 shootPowerLog 和 checksum
+    let { shootPowerLog, checksum } = deviceData;
     const rxValues = Buffer.from(base64Value, "base64");
-    let str = "";
-    for (const b of rxValues) {
-      str += b.toString(16).padStart(2, "0").toUpperCase();
-    }
+    // 判斷封包結構
     if (rxValues.length === 17 && rxValues[0] >= 176 && rxValues[0] <= 183) {
       const index = rxValues[0] - 176;
+      // index 為 0，則 checksum 歸零，準備新一組封包
       if (index === 0) {
         checksum = 0;
       }
+      // 第 7 個封包，就做 checksum 驗證
       if (index === 7) {
         if (checksum !== rxValues[16]) {
           console.log("handleCharacteristicChanged checksum error");
@@ -251,6 +268,7 @@ function useBLE() {
         }
         return;
       }
+      // 持續累加
       for (let i = 0; i < rxValues.length; i++) {
         shootPowerLog[index][i] = rxValues[i];
         checksum += i === 0 ? 0 : rxValues[i];
@@ -259,6 +277,11 @@ function useBLE() {
         }
       }
     }
+    // 將更新後的 deviceData 放回 deviceDataRef
+    deviceDataRef[deviceId] = {
+      shootPowerLog,
+      checksum,
+    };
   };
 
   const disconnectDevice = async (device: Device) => {
