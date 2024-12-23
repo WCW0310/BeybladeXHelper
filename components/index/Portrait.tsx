@@ -146,6 +146,7 @@ const useStyles = makeStyles((theme) => ({
   },
   divider: {
     borderWidth: 1,
+    borderColor: theme.colors.grey4,
     margin: 8,
   },
 }));

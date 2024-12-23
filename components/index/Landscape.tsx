@@ -148,8 +148,8 @@ const useStyles = makeStyles((theme) => ({
   },
   divider: {
     borderWidth: 1,
+    borderColor: theme.colors.grey4,
     margin: 8,
-    borderColor: theme.colors.black,
   },
   rightContainer: {
     flexDirection: "column",

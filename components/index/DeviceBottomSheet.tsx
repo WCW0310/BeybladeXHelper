@@ -74,6 +74,8 @@ const DeviceBottomSheet = ({
       enablePanDownToClose
       backdropComponent={renderBackdrop}
       footerComponent={renderFooter}
+      handleIndicatorStyle={styles.bottomSheetHandleIndicator}
+      backgroundStyle={styles.bottomSheetBackground}
     >
       <Text style={styles.deviceSettingTitle}>{"裝置設定"}</Text>
       <BottomSheetFlashList
@@ -96,12 +98,19 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 20,
   },
   deviceSettingListContainer: {
-    backgroundColor: theme.colors.background,
     paddingBottom: 48,
   },
   connectBtn: {
     alignSelf: "center",
     padding: 12,
     margin: 12,
+  },
+  bottomSheetHandleIndicator: {
+    backgroundColor: theme.colors.black,
+  },
+  bottomSheetBackground: {
+    backgroundColor: theme.colors.background,
+    borderWidth: 1,
+    borderColor: theme.colors.grey4,
   },
 }));
