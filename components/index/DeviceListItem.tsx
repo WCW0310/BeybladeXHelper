@@ -79,7 +79,7 @@ const DeviceListItem = ({
 
 export default DeviceListItem;
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   container: {
     flex: 1,
     borderRadius: 12,
@@ -99,11 +99,13 @@ const useStyles = makeStyles(() => ({
   shootNum: {
     fontSize: 20,
     textAlign: "left",
+    color: theme.colors.black,
   },
   spValue: {
     fontSize: 20,
     fontWeight: "bold",
     textAlign: "left",
+    color: theme.colors.black,
   },
   rightContainer: {
     flexDirection: "column",

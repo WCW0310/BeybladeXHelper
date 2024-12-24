@@ -9,9 +9,9 @@ export default function RootLayout() {
         name="index"
         options={{
           title: "設定",
-          headerTitleStyle: { color: theme.colors.black },
+          headerTintColor: theme.colors.black,
           headerStyle: {
-            backgroundColor: theme.colors.white,
+            backgroundColor: theme.colors.background,
           },
           headerRight: () => (
             <Icon
@@ -27,9 +27,9 @@ export default function RootLayout() {
         name="rememberedDevices"
         options={{
           title: "記錄的裝置",
-          headerTitleStyle: { color: theme.colors.black },
+          headerTintColor: theme.colors.black,
           headerStyle: {
-            backgroundColor: theme.colors.white,
+            backgroundColor: theme.colors.background,
           },
         }}
       />
