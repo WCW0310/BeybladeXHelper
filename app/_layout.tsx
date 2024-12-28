@@ -1,6 +1,6 @@
 import { createTheme, ThemeProvider } from "@rneui/themed";
 import { Provider } from "react-redux";
-import { store } from "@/store";
+import { store } from "@/store/redux/store";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Stack } from "expo-router";

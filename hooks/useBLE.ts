@@ -9,7 +9,7 @@ import {
   Device,
   DeviceId,
 } from "react-native-ble-plx";
-import { actions } from "@/slice/indexSlice";
+import { actions } from "@/store/redux/slices/indexSlice";
 import { useAppDispatch, useAppSelector } from "./useApp";
 import {
   PERIPHERAL_NAME,

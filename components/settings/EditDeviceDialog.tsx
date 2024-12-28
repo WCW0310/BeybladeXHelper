@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Dialog from "react-native-dialog";
 import { useAppDispatch, useAppSelector } from "@/hooks/useApp";
-import { actions } from "@/slice/rememberedDevicesSlice";
+import { actions } from "@/store/redux/slices/rememberedDevicesSlice";
 
 const EditDeviceDialog = ({
   isEditDeviceDialogVisible,

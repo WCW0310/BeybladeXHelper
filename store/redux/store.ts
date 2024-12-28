@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
-import indexSlice from "./slice/indexSlice";
-import rememberedDevicesSlice from "./slice/rememberedDevicesSlice";
+import indexSlice from "./slices/indexSlice";
+import rememberedDevicesSlice from "./slices/rememberedDevicesSlice";
 
 export const store = configureStore({
   reducer: {

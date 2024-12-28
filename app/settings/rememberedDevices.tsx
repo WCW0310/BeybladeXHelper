@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/useApp";
 import { Icon, makeStyles } from "@rneui/themed";
 import { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import { actions } from "@/slice/rememberedDevicesSlice";
+import { actions } from "@/store/redux/slices/rememberedDevicesSlice";
 
 export default function RememberedDevices() {
   const styles = useStyles();
