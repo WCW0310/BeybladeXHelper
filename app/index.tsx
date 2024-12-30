@@ -13,6 +13,8 @@ import { ConnectedDeviceState } from "@/constants/ConnectedDeviceState";
 import DeviceBottomSheet from "@/components/index/DeviceBottomSheet";
 import { useAppSelector } from "@/hooks/useApp";
 import { makeStyles } from "@rneui/themed";
+import { useConfig } from "@/store/contexts/ConfigContext";
+import Landscape2p from "@/components/index/Landscape2p";
 
 const renderSpListItem = ({ item }: { item: SpListItemProps }) => (
   <SpListItem
@@ -27,6 +29,8 @@ export default function Index() {
   const styles = useStyles();
 
   const { width, height } = useWindowDimensions();
+
+  const { gameMode } = useConfig();
 
   const [isHideSpList, setIsHideSpList] = useState(false);
 
@@ -75,6 +79,13 @@ export default function Index() {
       ScreenOrientation.removeOrientationChangeListeners();
     };
   });
+  useEffect(() => {
+    if (gameMode === "2P") {
+      ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+    } else {
+      ScreenOrientation.unlockAsync();
+    }
+  }, [gameMode]);
 
   // KeepAwake
   useEffect(() => {
@@ -103,9 +114,10 @@ export default function Index() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {currentOrientation === ScreenOrientation.Orientation.PORTRAIT_UP ||
-      currentOrientation === ScreenOrientation.Orientation.PORTRAIT_DOWN ||
-      currentOrientation === ScreenOrientation.Orientation.UNKNOWN ? (
+      {(currentOrientation === ScreenOrientation.Orientation.PORTRAIT_UP ||
+        currentOrientation === ScreenOrientation.Orientation.PORTRAIT_DOWN ||
+        currentOrientation === ScreenOrientation.Orientation.UNKNOWN) &&
+      gameMode !== "2P" ? (
         <Portrait
           hideSpList={isHideSpList}
           setHideSpList={setIsHideSpList}
@@ -118,10 +130,19 @@ export default function Index() {
           stopScan={stopScan}
           showDeviceBottomSheet={showDeviceBottomSheet}
         />
-      ) : (
+      ) : gameMode === "SINGLE" ? (
         <Landscape
-          hideSpList={isHideSpList}
-          setHideSpList={setIsHideSpList}
+          clearSpList={clearSpList}
+          renderSpListItem={renderSpListItem}
+          isScanning={isScanning}
+          isConnecting={isConnecting}
+          isConnected={isConnected}
+          scanDevices={scanDevices}
+          stopScan={stopScan}
+          showDeviceBottomSheet={showDeviceBottomSheet}
+        />
+      ) : (
+        <Landscape2p
           clearSpList={clearSpList}
           renderSpListItem={renderSpListItem}
           isScanning={isScanning}

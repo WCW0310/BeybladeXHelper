@@ -8,7 +8,6 @@ import { useAppSelector } from "@/hooks/useApp";
 import ToSettingBtn from "./ToSettingBtn";
 
 const Landscape2p = ({
-  hideSpList,
   clearSpList,
   renderSpListItem,
   isScanning,
@@ -18,8 +17,6 @@ const Landscape2p = ({
   stopScan,
   showDeviceBottomSheet,
 }: {
-  hideSpList: boolean;
-  setHideSpList: React.Dispatch<React.SetStateAction<boolean>>;
   clearSpList: () => void;
   renderSpListItem: ({ item }: { item: SpListItemProps }) => JSX.Element;
   isScanning: boolean;
@@ -85,13 +82,11 @@ const Landscape2p = ({
         <Text style={styles.spListTitle} adjustsFontSizeToFit numberOfLines={1}>
           {"最近紀錄"}
         </Text>
-        {!hideSpList && (
-          <FlatList
-            data={spList.filter((_, index) => index !== 0)}
-            renderItem={renderSpListItem}
-            keyExtractor={(item) => item.id}
-          />
-        )}
+        <FlatList
+          data={spList.filter((_, index) => index !== 0)}
+          renderItem={renderSpListItem}
+          keyExtractor={(item) => item.id}
+        />
         <Button
           containerStyle={styles.clearBtn}
           title={"清除紀錄"}

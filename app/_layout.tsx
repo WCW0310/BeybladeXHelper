@@ -7,6 +7,7 @@ import { Stack } from "expo-router";
 import { useColorScheme } from "react-native";
 import { storage } from "@/managers/StorageManager";
 import { CONFIG_KEY_THEME_MODE } from "@/constants/ConfigKey";
+import { ConfigProvider } from "@/store/contexts/ConfigContext";
 
 const theme = createTheme({
   components: {
@@ -28,16 +29,18 @@ export default function RootLayout() {
       <GestureHandlerRootView>
         <SafeAreaProvider>
           <ThemeProvider theme={theme}>
-            <Stack>
-              <Stack.Screen name="index" options={{ headerShown: false }} />
-              <Stack.Screen
-                name="settings"
-                options={{
-                  headerShown: false,
-                  presentation: "modal",
-                }}
-              />
-            </Stack>
+            <ConfigProvider>
+              <Stack>
+                <Stack.Screen name="index" options={{ headerShown: false }} />
+                <Stack.Screen
+                  name="settings"
+                  options={{
+                    headerShown: false,
+                    presentation: "modal",
+                  }}
+                />
+              </Stack>
+            </ConfigProvider>
           </ThemeProvider>
         </SafeAreaProvider>
       </GestureHandlerRootView>
