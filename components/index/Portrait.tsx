@@ -6,32 +6,30 @@ import { SpListItemProps } from "@/components/index/SpListItem";
 import DeviceBtn from "./DeviceBtn";
 import { useAppSelector } from "@/hooks/useApp";
 import ToSettingBtn from "./ToSettingBtn";
+import { useConfig } from "@/store/contexts/ConfigContext";
 
 const Portrait = ({
   hideSpList,
   setHideSpList,
-  clearSpList,
   renderSpListItem,
-  isScanning,
-  isConnecting,
-  isConnected,
-  scanDevices,
-  stopScan,
   showDeviceBottomSheet,
 }: {
   hideSpList: boolean;
   setHideSpList: React.Dispatch<React.SetStateAction<boolean>>;
-  clearSpList: () => void;
   renderSpListItem: ({ item }: { item: SpListItemProps }) => JSX.Element;
-  isScanning: boolean;
-  isConnecting: boolean;
-  isConnected: boolean;
-  scanDevices: () => Promise<void>;
-  stopScan: () => void;
   showDeviceBottomSheet: () => void;
 }) => {
   const styles = useStyles();
   const { theme } = useTheme();
+  const { ble } = useConfig();
+  const {
+    scanDevices,
+    stopScan,
+    clearSpList,
+    isScanning,
+    isConnecting,
+    isConnected,
+  } = ble;
   const { numShootValue, maxShootPowerValue, spList } = useAppSelector(
     (state) => state.index
   );

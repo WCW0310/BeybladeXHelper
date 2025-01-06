@@ -20,7 +20,17 @@ import {
 
 const bleManager = new BleManager();
 
-function useBLE() {
+export type Ble = {
+  scanDevices: () => Promise<void>;
+  stopScan: () => void;
+  disconnectDevice: (device: Device) => Promise<void>;
+  clearSpList: () => void;
+  isScanning: boolean;
+  isConnecting: boolean;
+  isConnected: boolean;
+};
+
+function useBLE(): Ble {
   const dispatch = useAppDispatch();
   const { connectedDevices } = useAppSelector((state) => state.index);
   const [isScanning, setIsScanning] = useState(false);
@@ -319,7 +329,6 @@ function useBLE() {
   return {
     scanDevices,
     stopScan,
-    connectToDevice,
     disconnectDevice,
     clearSpList,
     isScanning,

@@ -10,16 +10,15 @@ import BottomSheet, {
 import { ConnectedDeviceState } from "@/constants/ConnectedDeviceState";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Button, makeStyles } from "@rneui/themed";
+import { Ble } from "@/hooks/useBLE";
 
 const DeviceBottomSheet = ({
+  ble,
   bottomSheetRef,
   connectedDevices,
   renderDeviceListItem,
-  isScanning,
-  isConnecting,
-  scanDevices,
-  stopScan,
 }: {
+  ble: Ble;
   bottomSheetRef: React.RefObject<BottomSheet>;
   connectedDevices: ConnectedDeviceState[];
   renderDeviceListItem: ({
@@ -27,12 +26,9 @@ const DeviceBottomSheet = ({
   }: {
     item: ConnectedDeviceState;
   }) => React.JSX.Element;
-  isScanning: boolean;
-  isConnecting: boolean;
-  scanDevices: () => Promise<void>;
-  stopScan: () => void;
 }) => {
   const styles = useStyles();
+  const { scanDevices, stopScan, isScanning, isConnecting } = ble;
   const { bottom } = useSafeAreaInsets();
   const renderBackdrop = useCallback(
     (props: BottomSheetBackdropProps) => (

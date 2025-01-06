@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useWindowDimensions } from "react-native";
-import useBLE from "@/hooks/useBLE";
 import SpListItem, { SpListItemProps } from "@/components/index/SpListItem";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as ScreenOrientation from "expo-screen-orientation";
@@ -30,19 +29,10 @@ export default function Index() {
 
   const { width, height } = useWindowDimensions();
 
-  const { gameMode } = useConfig();
+  const { ble, gameMode } = useConfig();
+  const { disconnectDevice, isScanning, isConnecting, isConnected } = ble;
 
   const [isHideSpList, setIsHideSpList] = useState(false);
-
-  const {
-    scanDevices,
-    stopScan,
-    disconnectDevice,
-    clearSpList,
-    isScanning,
-    isConnecting,
-    isConnected,
-  } = useBLE();
 
   const { connectedDevices } = useAppSelector((state) => state.index);
 
@@ -121,46 +111,25 @@ export default function Index() {
         <Portrait
           hideSpList={isHideSpList}
           setHideSpList={setIsHideSpList}
-          clearSpList={clearSpList}
           renderSpListItem={renderSpListItem}
-          isScanning={isScanning}
-          isConnecting={isConnecting}
-          isConnected={isConnected}
-          scanDevices={scanDevices}
-          stopScan={stopScan}
           showDeviceBottomSheet={showDeviceBottomSheet}
         />
       ) : gameMode === "SINGLE" ? (
         <Landscape
-          clearSpList={clearSpList}
           renderSpListItem={renderSpListItem}
-          isScanning={isScanning}
-          isConnecting={isConnecting}
-          isConnected={isConnected}
-          scanDevices={scanDevices}
-          stopScan={stopScan}
           showDeviceBottomSheet={showDeviceBottomSheet}
         />
       ) : (
         <Landscape2p
-          clearSpList={clearSpList}
           renderSpListItem={renderSpListItem}
-          isScanning={isScanning}
-          isConnecting={isConnecting}
-          isConnected={isConnected}
-          scanDevices={scanDevices}
-          stopScan={stopScan}
           showDeviceBottomSheet={showDeviceBottomSheet}
         />
       )}
       <DeviceBottomSheet
+        ble={ble}
         bottomSheetRef={bottomSheetRef}
         connectedDevices={connectedDevices}
         renderDeviceListItem={renderDeviceListItem}
-        isScanning={isScanning}
-        isConnecting={isConnecting}
-        scanDevices={scanDevices}
-        stopScan={stopScan}
       />
     </SafeAreaView>
   );
