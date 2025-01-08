@@ -36,7 +36,7 @@ export default function RememberedDevices() {
               <Icon name="edit" type="antdesign" />
             </TouchableOpacity>
             {connectedDevices.find((value) => value.device.id === key) ? (
-              <Text>已連結</Text>
+              <Text style={styles.text}>已連結</Text>
             ) : (
               <TouchableOpacity
                 onPress={() => {
